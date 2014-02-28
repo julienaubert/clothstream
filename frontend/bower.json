@@ -1,0 +1,46 @@
+{
+  "name": "knockout-brunch-seed",
+  "version": "0.0.1",
+  "homepage": "",
+  "repo": "",
+  "authors": [
+    "Julien Aubert <julien.aubert.mail@gmail.com>"
+  ],
+  "description": "",
+  "main": "public/javascripts/app.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~1.11.0",
+    "console-polyfill": "~0.1.0",
+    "swag": "~0.5.0",
+    "lodash": "~2",
+    "normalize-css": "~2",
+    "font-awesome": "~4",
+    "knockout.js": "~3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "~1.17",
+    "chai": "~1.9",
+    "sinon": "1.8.2",
+    "sinon-chai": "2.5.0",
+    "blanket": "1.1.5",
+    "commonjs-require-definition": "~0.1.2"
+  },
+  "overrides": {
+    "font-awesome": {
+      "main": ["css"]
+    },
+    "sinon": {
+      "main": ["lib/sinon.js"]
+    },
+    "sinon-chai": {
+      "main": ["lib/sinon-chai.js"]
+    }
+  }
+}
