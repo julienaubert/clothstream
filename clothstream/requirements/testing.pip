@@ -1,0 +1,11 @@
+pytest
+pytest-cov
+pytest-django
+tox
+coverage
+flake8
+webtest
+django-webtest
+mock
+django-debug-toolbar
+invoke

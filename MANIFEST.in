@@ -1,0 +1,6 @@
+include README
+include CHANGES
+include MANIFEST.in
+recursive-include docs *
+recursive-include clothstream *
+global-exclude *.pyc

@@ -1,0 +1,15 @@
+*.~*
+.coverage
+pytest.xml
+coverage.xml
+htmlcov
+.idea
+.tox
+dist
+*.sqlite
+*.py[co]
+.build
+*.egg*
+.DS_Store
+._*
+MANIFEST
