@@ -60,7 +60,7 @@ endif
 
 
 ci_test: install-deps mkbuilddir
-	[ "${django}" = "1.6.x" ] && pip install https://www.djangoproject.com/m/releases/1.6/Django-1.6b4.tar.gz || echo ""
+	[ "${django}" = "1.6.x" ] && pip install django==1.6 || echo ""
 	[ "${django}" = "dev" ] && pip install git+git@github.com:django/django.git || echo ""
 
 	[ '${database}' = 'postgres' ] && psql -c 'DROP DATABASE IF EXISTS clothstream_test_$BUILD_NUMBER;' || echo ""

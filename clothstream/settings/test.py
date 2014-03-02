@@ -24,7 +24,8 @@ SUPPORTED_DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '',
         'USER': 'postgres',
-        'PASSWORD': ''
+        'PASSWORD': '',
+        'CONN_MAX_AGE': None
     }
 }
 
