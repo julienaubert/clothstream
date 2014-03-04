@@ -17,7 +17,6 @@ locale:
 
 setup-dev-env: install-deps
 	./manage.py syncdb --migrate --noinput
-	./manage.py loaddata clothstream/site/fixtures/clothstream.json
 
 setup-test-db: install-deps
 	./manage.py syncdb --migrate --noinput --settings=clothstream.site.settings.testing
@@ -57,6 +56,14 @@ docs: mkbuilddir
 ifdef BROWSE
 	firefox ${BUILDDIR}/docs/index.html
 endif
+
+
+newdev:
+	[ "${database}" = 'postgres' ] && psql -d postgres -c 'DROP DATABASE IF EXISTS clothstream_test_$BUILD_NUMBER;' || echo ""
+	[ "${database}" = 'postgres' ] && psql -d postgres -c 'CREATE DATABASE clothstream_test_$BUILD_NUMBER;' || echo ""
+	[ "${database}" = 'sqlite' ] && rm clothstream.sqlite || echo ""
+	./manage.py syncdb --migrate --noinput
+	./manage.py sampledata
 
 
 ci_test: install-deps mkbuilddir

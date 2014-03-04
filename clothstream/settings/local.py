@@ -1,3 +1,5 @@
+""" use on local machine
+"""
 import os
 import debug_toolbar
 import django_extensions
@@ -11,7 +13,7 @@ INSTALLED_APPS = INSTALLED_APPS + ('south',)
 SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
 
-INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar',)
+INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', 'clothstream.demo')
 MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 

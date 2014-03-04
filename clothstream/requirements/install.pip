@@ -1,9 +1,20 @@
 django-secure
 raven
-django-uuid-pk
+git+https://github.com/julienaubert/django-uuidfield@python3#egg=django_uuidfield
 bpython
 django-model-utils
 south
 django_extensions
 Sphinx
+fabric
+
+# will become standard in python (OOP path object)
 pathlib
+
+# for WS
+djangorestframework
+markdown
+django-filter
+
+# for sampledata
+git+https://github.com/julienaubert/django-dynamic-fixture@feature/py3_support#egg=django_dynamic_fixture

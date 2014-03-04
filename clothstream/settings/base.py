@@ -97,6 +97,8 @@ INSTALLED_APPS = (
     'south',
     'djangosecure',
     'clothstream',
+    'rest_framework',
+    'clothstream.item'
 )
 
 
@@ -119,6 +121,19 @@ RAVEN_CONFIG = {
     'dsn': '<BETA_RAVEN_DSN>',
 }
 
+
+# required to support custom-fields (DDF - for sampledata / tests)
+DDF_DEFAULT_DATA_FIXTURE = 'clothstream.tests.ddf.DataFixture'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'PAGINATE_BY': 10,
+}
 
 from .logging_conf import *  # flake8: noqa
 
