@@ -7,27 +7,55 @@ require.register("scripts/homeView", function(exports, require, module) {
         this.link = ko.observable(data.link);
     }
 
-    exports.HomeViewModel = function(first, last) {
+    exports.HomeViewModel = function() {
         var self = this;
 
-        this.firstName = ko.observable(first);
-        this.lastName = ko.observable(last);
-
-        this.items = ko.observableArray([]);
-
-        $.getJSON("http://localhost:8000/item/items/", function(allData) {
-            var mappedItems = $.map(allData.results, function(item) { return new Item(item) });
-            self.items(mappedItems);
+        self.debug = false;
+        self.items = ko.observableArray([]);
+        self.items.extend({
+            infinitescroll: {}
         });
 
+        // detect resize
+        $(window).resize(function() {
+            updateViewportDimensions();
+        });
 
-        this.fullName = ko.computed(function() {
-            // Knockout tracks dependencies automatically. It knows that fullName depends on firstName and lastName, because these get called when evaluating fullName.
-            if (this.firstName() && this.lastName())
-            {
-                return this.firstName() + " " + (this.lastName() || "");
+        // detect scroll
+        $(items).scroll(function() {
+            self.items.infinitescroll.scrollY($(items).scrollTop());
+
+            // add more items if scroll reaches the last 100 items
+            if (self.items.peek().length - self.items.infinitescroll.lastVisibleIndex.peek() <= 100) {
+                populateItems(100);
             }
-        }, this);
+        });
+
+        // update dimensions of infinite-scroll viewport and item
+        function updateViewPortDimensions() {
+            var itemsRef = $('#items'),
+                itemRef = $('.item').first(),
+                itemsWidth = itemsRef.width(),
+                itemsHeight = itemsRef.height(),
+                itemWidth = itemRef.outerWidth(),
+                itemHeight = itemRef.outerHeight();
+
+            self.items.infinitescroll.viewportWidth(itemsWidth);
+            self.items.infinitescroll.viewportHeight(itemsHeight);
+            self.items.infinitescroll.itemWidth(itemWidth);
+            self.items.infinitescroll.itemHeight(itemHeight);
+        }
+
+        function populateItems(numTotal) {
+            $.getJSON("http://localhost:8000/item/items/", function(allData) {
+                var mappedItems = $.map(allData.results, function(item) { return new Item(item) });
+                self.items(mappedItems);
+            });
+        }
+
+        updateViewPortDimensions();
+        populateItems();
+
     };
 
 });

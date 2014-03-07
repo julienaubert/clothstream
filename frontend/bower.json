@@ -22,7 +22,8 @@
     "lodash": "~2",
     "normalize-css": "~2",
     "font-awesome": "~4",
-    "knockout.js": "~3.0.0"
+    "knockout.js": "~3.0.0",
+    "knockout-js-infinite-scroll": "~0.1.0"
   },
   "devDependencies": {
     "mocha": "~1.17",
