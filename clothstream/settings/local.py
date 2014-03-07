@@ -1,11 +1,7 @@
 """ use on local machine
 """
-import os
-import debug_toolbar
-import django_extensions
-import south
-from clothstream.settings.test import *  # flake8: noqa
-
+from ..settings.test import *  # flake8: noqa
+from ..lib.paths import TMP_BUILDDIR
 
 INSTALLED_APPS = INSTALLED_APPS + ('django_extensions', )
 
@@ -24,10 +20,8 @@ if 'djangosecure.middleware.SecurityMiddleware' in MIDDLEWARE_CLASSES:
 
 SECRET_KEY = 'develop'
 
-DEVDIR = os.path.dirname(__file__)
-
 DEBUG = True
 TEMPLATE_DEBUG = True
 
-MEDIA_ROOT = os.path.join(DEVDIR, 'media')
-STATIC_ROOT = os.path.join(DEVDIR, 'static')
+MEDIA_ROOT = str(TMP_BUILDDIR/'media')
+STATIC_ROOT = str(TMP_BUILDDIR/'static')

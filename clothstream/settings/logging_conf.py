@@ -1,8 +1,7 @@
 import os
 from .base import CLOTHSTREAM_LOG_DIR
 
-if not os.path.exists(CLOTHSTREAM_LOG_DIR):
-    os.makedirs(CLOTHSTREAM_LOG_DIR)
+os.makedirs(CLOTHSTREAM_LOG_DIR, exist_ok=True)
 
 
 def file_handler(name, level):

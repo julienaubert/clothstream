@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import Item
+from ..lib import rest
 
 
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
+    thumb_image_url = rest.HyperlinkedFileField(source='thumb_image')
+
     class Meta:
         model = Item
-        fields = ('uuid', 'thumb_name', 'thumb_image')
+        fields = ('uuid', 'thumb_title', 'thumb_image_url', 'link')
 
 

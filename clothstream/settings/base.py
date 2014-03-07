@@ -1,16 +1,8 @@
-# Global settings for clothstream project.
+# Global settings
 import os
-from pathlib import Path
+from clothstream.lib.paths import DJANGO_ROOT, TMP_BUILDDIR
 
-
-########## PATH CONFIGURATION
-# Absolute filesystem path to the Django project directory:
-DJANGO_ROOT = Path(__file__).parent.parent
-PROJECT_DIR = DJANGO_ROOT.parent
 SITE_NAME = DJANGO_ROOT.name
-# BUILD DIR - logs, media etc when run locally
-TMP_BUILDDIR = PROJECT_DIR/'.build'
-##########
 
 
 DEBUG = False

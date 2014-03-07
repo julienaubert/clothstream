@@ -29,7 +29,7 @@ SUPPORTED_DATABASES = {
     }
 }
 
-db = os.environ.get('database', 'sqlite')
+db = os.environ.get('database', 'postgres')
 if db not in SUPPORTED_DATABASES:
     raise Exception('Unknown database `%s`' % db)
 

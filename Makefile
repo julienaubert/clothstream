@@ -59,10 +59,10 @@ endif
 
 
 newdev:
-	[ "${database}" = 'postgres' ] && psql -d postgres -c 'DROP DATABASE IF EXISTS clothstream_test_$BUILD_NUMBER;' || echo ""
-	[ "${database}" = 'postgres' ] && psql -d postgres -c 'CREATE DATABASE clothstream_test_$BUILD_NUMBER;' || echo ""
-	[ "${database}" = 'sqlite' ] && rm clothstream.sqlite || echo ""
-	./manage.py syncdb --migrate --noinput
+	psql -d postgres -c 'DROP DATABASE IF EXISTS clothstream;' || echo ""
+	psql -d postgres -c 'CREATE DATABASE clothstream;' || echo ""
+	rm clothstream.sqlite || echo ""
+	./manage.py syncdb --noinput
 	./manage.py sampledata
 
 

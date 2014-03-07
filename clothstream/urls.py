@@ -19,6 +19,8 @@ if settings.DEBUG:
     urlpatterns += patterns(
         '',
         url(r'^__debug__/', include(debug_toolbar.urls)),
-        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+        url(r'^media/(?P<path>.*)$'.format(settings.MEDIA_URL.lstrip('/')),
+            'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
     )
 
