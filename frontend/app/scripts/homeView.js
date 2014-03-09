@@ -10,7 +10,7 @@ require.register("scripts/homeView", function(exports, require, module) {
     exports.HomeViewModel = function() {
         var self = this;
 
-        self.debug = false;
+        self.json_page_size = 10
         self.items = ko.observableArray([]);
         self.items.extend({
             infinitescroll: {}
@@ -18,16 +18,14 @@ require.register("scripts/homeView", function(exports, require, module) {
 
         // detect resize
         $(window).resize(function() {
-            updateViewportDimensions();
+            updateViewPortDimensions();
         });
 
         // detect scroll
         $(items).scroll(function() {
             self.items.infinitescroll.scrollY($(items).scrollTop());
-
-            // add more items if scroll reaches the last 100 items
-            if (self.items.peek().length - self.items.infinitescroll.lastVisibleIndex.peek() <= 100) {
-                populateItems(100);
+            if (self.items.peek().length - self.items.infinitescroll.lastVisibleIndex.peek() <= self.json_page_size) {
+                populateItems();
             }
         });
 
@@ -44,18 +42,30 @@ require.register("scripts/homeView", function(exports, require, module) {
             self.items.infinitescroll.viewportHeight(itemsHeight);
             self.items.infinitescroll.itemWidth(itemWidth);
             self.items.infinitescroll.itemHeight(itemHeight);
-        }
+        };
 
-        function populateItems(numTotal) {
-            $.getJSON("http://localhost:8000/item/items/", function(allData) {
-                var mappedItems = $.map(allData.results, function(item) { return new Item(item) });
-                self.items(mappedItems);
+        function populateItems() {
+            var last_json_page = 1 + Math.floor(self.items.infinitescroll.lastVisibleIndex() / self.json_page_size),
+                url = "http://localhost:8000/item/items/?" +
+                      "page_size=" + self.json_page_size +
+                      "&page=" + last_json_page;
+            // guaranteed to load one at a time, as user cannot scroll down further until last request successful
+            $.ajax({
+                url: url, dataType: 'json', async: true,
+                success: function(data) {
+                    var offset = (last_json_page - 1) * self.json_page_size,
+                        i
+                    for (i = 0; i < data.results.length; i++)
+                    {
+                        self.items()[i + offset] = new Item(data.results[i]);
+                    }
+                    self.items.valueHasMutated();
+                }
             });
         }
 
         updateViewPortDimensions();
         populateItems();
-
     };
 
 });
