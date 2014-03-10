@@ -22,7 +22,8 @@
     "lodash": "~2",
     "normalize-css": "~2",
     "font-awesome": "~4",
-    "knockout.js": "~3.0.0"
+    "knockout.js": "~3.0.0",
+    "knockout-js-infinite-scroll-fork": "~0.1.0"
   },
   "devDependencies": {
     "mocha": "~1.17",
@@ -30,8 +31,7 @@
     "sinon": "1.8.2",
     "sinon-chai": "2.5.0",
     "blanket": "1.1.5",
-    "commonjs-require-definition": "~0.1.2",
-    "singularity": "1.x.x"
+    "commonjs-require-definition": "~0.1.2"
   },
   "overrides": {
     "font-awesome": {

@@ -47,12 +47,7 @@ exports.config = {
   plugins: {
     sass: {
       gem_home: './.gems/ruby/1.9.1/',
-      mode: 'ruby',
-      options: {
-        includePaths: [
-          'bower_components/singularity/stylesheets'
-        ]
-      }
+      mode: 'ruby'
     }
   }
 };
