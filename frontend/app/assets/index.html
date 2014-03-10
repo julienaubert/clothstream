@@ -24,42 +24,6 @@
         <section class="app">
             <h1>Voer <i class="fa fa-thumbs-o-up"></i></h1>
 
-
-                <div>
-                    <strong>Total items:</strong>
-                    <span data-bind="text: items().length"></span>
-                    <br />
-                    <strong>Display items:</strong>
-                    <span data-bind="text: items.infinitescroll.numItemsPerPage()"></span>
-                    <br />
-                    <strong>Rendered items:</strong>
-                    <span data-bind="text: items.infinitescroll.displayItems().length -
-                                           items.infinitescroll.firstHiddenIndex()"></span>
-                    <br />
-                </div><br />
-
-                <div>
-                    <strong>Num items per page:</strong>
-                    <span data-bind="text: items.infinitescroll.numItemsPerPage()"></span>
-                    <br />
-                    <strong>First visible item index:</strong>
-                    <span data-bind="text: items.infinitescroll.firstVisibleIndex()"></span>
-                    <br />
-                    <strong>Last visible item index:</strong>
-                    <span data-bind="text: items.infinitescroll.lastVisibleIndex()"></span>
-                </div><br />
-
-                <div style="font-size: 0.8em;">
-                    <strong>container w/h: </strong>
-                    <span data-bind="text: items.infinitescroll.viewportWidth() + 'px / ' +
-                                           items.infinitescroll.viewportHeight() + 'px'"></span>
-                    <br />
-                    <strong>each item w/h: </strong>
-                    <span data-bind="text: items.infinitescroll.itemWidth() + 'px / ' +
-                                           items.infinitescroll.itemHeight() + 'px'"></span>
-                </div>
-
-
             <ul id="items" data-bind="foreach: items.infinitescroll.displayItems"  style="display: block;
                 position:absolute; width: 50%; height:50%; overflow-y: auto; background: #ffeeff;">
                 <li class="item" style="display:block; position:relative; height: 64px;">

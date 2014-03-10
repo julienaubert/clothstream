@@ -38,7 +38,20 @@ exports.config = {
         'css/app.css': /^(app|bower_components)/
       },
       order: {
-        before: ['bower_components/normalize-css']
+        before: [
+            'bower_components/normalize-css',
+        ]
+      }
+    }
+  },
+  plugins: {
+    sass: {
+      gem_home: './.gems/ruby/1.9.1/',
+      mode: 'ruby',
+      options: {
+        includePaths: [
+          'bower_components/singularity/stylesheets'
+        ]
       }
     }
   }

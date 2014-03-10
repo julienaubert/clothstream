@@ -1,0 +1,28 @@
+
+
+== TODO ==
+
+once bower pkg fixed, add to bower.json: "knockout-js-infinite-scroll": "0.1.0"
+
+
+
+== Frontend ==
+
+Pre-requisites, install:
+
+    node-js/npm
+    npm install -g brunch bower
+    gem install bundler
+
+cd frontend
+bower install
+npm install
+./bower_assets.sh
+bundler install
+
+
+After this can run front-end server which will reload automatically if change anything in frontend/app/*
+
+    brunch w -s
+
+

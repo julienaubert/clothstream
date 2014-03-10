@@ -16,9 +16,9 @@
     "test": "./node_modules/.bin/karma start karma.conf.js"
   },
   "dependencies": {
+    "sass-brunch": "~1.8.0",
     "javascript-brunch": "~1.7.1",
     "css-brunch": "~1.7.0",
-    "less-brunch": "~1.7.1",
     "uglify-js-brunch": "~1.7.6",
     "clean-css-brunch": "~1.7.1"
   },

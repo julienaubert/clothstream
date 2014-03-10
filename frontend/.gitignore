@@ -1,3 +1,4 @@
+.gems/*
 coverage/*
 bower_components/*
 public/*
