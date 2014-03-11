@@ -18,16 +18,17 @@ require.register("scripts/homeView", function(exports, require, module) {
 
         // detect resize
         $(window).resize(function() {
+            // TODO: remove from view model (DOM should connect to ViewModel, not reverse (like event: scrolled)
             updateViewPortDimensions();
         });
 
-        // detect scroll
-        $(items).scroll(function() {
-            self.items.infinitescroll.scrollY($(items).scrollTop());
+        self.scrolled = function(data, event) {
+            var elem = event.target;
+            self.items.infinitescroll.scrollY(elem.scrollTop);
             if (self.items.peek().length - self.items.infinitescroll.lastVisibleIndex.peek() <= self.json_page_size) {
                 populateItems();
             }
-        });
+        };
 
         // update dimensions of infinite-scroll viewport and item
         function updateViewPortDimensions() {

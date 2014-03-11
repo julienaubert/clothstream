@@ -21,32 +21,18 @@
     </head>
 
     <body>
-        <section class="app">
-            <h1>Voer <i class="fa fa-thumbs-o-up"></i></h1>
-
-            <ul id="items" data-bind="foreach: items.infinitescroll.displayItems"  style="display: block;
-                position:absolute; width: 50%; height:50%; overflow-y: auto; background: #ffeeff;">
-                <li class="item" style="display:block; position:relative; height: 64px;">
-                    <!-- ko if: $index() >= $root.items.infinitescroll.firstHiddenIndex() -->
-                        <a data-bind="attr: { href: link, title: thumb_title }">
-                            <img width="64px" height="64px" data-bind="attr: { src: thumb_image_url }"></img>
-                            <span data-bind="text: thumb_title"></span>
-                        </a>
-                    <!-- /ko -->
-                </li>
-            </ul>
-        </section>
-
-        <h1>Here be grids</h1>
-        <div id="page">
-          <div id="foo"></div>
-          <div id="bar"></div>
-          <div id="baz"></div>
-          <div id="qux"></div>
-          <div id="waldo"></div>
-          <div id="garfield"></div>
-        </div>
-
+        <ul id="items" data-bind="foreach: items.infinitescroll.displayItems, event: { scroll: scrolled }, resize: resized"
+            style="display: block;
+            position:absolute; width: 50%; height:80%; overflow-y: auto;">
+            <li class="item" style="display:block; position:relative; height: 64px;">
+                <!-- ko if: $index() >= $root.items.infinitescroll.firstHiddenIndex() -->
+                    <a data-bind="attr: { href: link, title: thumb_title }">
+                        <img width="64px" height="64px" data-bind="attr: { src: thumb_image_url }"></img>
+                        <span data-bind="text: thumb_title"></span>
+                    </a>
+                <!-- /ko -->
+            </li>
+        </ul>
 
         <script src="js/vendor.js"></script>
         <script src="js/app.js"></script>
