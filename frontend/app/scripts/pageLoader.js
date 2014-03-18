@@ -4,16 +4,19 @@ require.register("scripts/pageLoader", function(exports, require, module) {
     exports.Sequential = function (props, callback)
     {
         // PLANS:
-        //  - tie it to django-restful-framework conventions:
-        //      - get initial url, but do not send page param, instead use the "next" link
+        //  - separate as its own open-sourced component
+        //  - have configurable expectations on webservice for page-traversal
+        //      - provide defaults for django-restful-framework conventions
+        //      - e.g. get initial url, but do not send page param, instead use the "next" link
         //      - benefit: avoid making that last 404 request to know page is out, more dynamic for backend to change
         //                 api
+        //      - minimize nr requests: loadRange(1,8) can use the page_size to make minimum amount of requests
         //  - use promise API
         //      - makes it easier to test
         //      - allows making function loadRange(1,8) and which could make several http request async
         //        and cache those results, and still call the callbacks in order
-        //  - minimize nr requests: loadRange(1,8) can use the page_size to make minimum amount of requests
-        //  - helper: have a loadPagesUpToIndex(x) which will ensure all pages loads, not only the page x is on
+        //      - makes it easier to have a helper: a loadPagesUpToIndex(x) which will ensure all pages loads,
+        //        not only the page x is on (but needs to be in order, so promise is perfect for this)
 
         // props: {
         //  page_size: <int>,
