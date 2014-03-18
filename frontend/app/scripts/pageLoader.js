@@ -13,7 +13,8 @@ require.register("scripts/pageLoader", function(exports, require, module) {
         //      - allows making function loadRange(1,8) and which could make several http request async
         //        and cache those results, and still call the callbacks in order
         //  - minimize nr requests: loadRange(1,8) can use the page_size to make minimum amount of requests
-        //
+        //  - helper: have a loadPagesUpToIndex(x) which will ensure all pages loads, not only the page x is on
+
         // props: {
         //  page_size: <int>,
         // }
