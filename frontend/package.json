@@ -24,8 +24,8 @@
   },
   "devDependencies": {
     "auto-reload-brunch": "1.7.1",
-    "karma-mocha": "~0.1.1",
-    "karma-coverage": "~0.2.0",
-    "karma": "~0.10.9"
+        "karma-mocha": "~0.1.1",
+        "karma-coverage": "karma-runner/karma-coverage#a35d8d068ef",
+        "karma": "~0.10.9"
   }
 }

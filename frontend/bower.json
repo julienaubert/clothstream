@@ -20,28 +20,32 @@
     "console-polyfill": "~0.1.0",
     "swag": "~0.5.0",
     "lodash": "~2",
-    "normalize-css": "~2",
     "font-awesome": "~4",
-    "knockout.js": "~3.0.0",
-    "knockout-js-infinite-scroll-fork": "~0.1.0"
+    "knockout-js-infinite-scroll": "julienaubert/knockout-js-infinite-scroll#add_tests",
+    "knockout-3.1.0": "http://knockoutjs.com/downloads/knockout-3.1.0.js"
   },
   "devDependencies": {
     "mocha": "~1.17",
     "chai": "~1.9",
     "sinon": "1.8.2",
     "sinon-chai": "2.5.0",
-    "blanket": "1.1.5",
     "commonjs-require-definition": "~0.1.2"
   },
   "overrides": {
     "font-awesome": {
-      "main": ["css"]
+      "main": [
+        "css"
+      ]
     },
     "sinon": {
-      "main": ["lib/sinon.js"]
+      "main": [
+        "lib/sinon.js"
+      ]
     },
     "sinon-chai": {
-      "main": ["lib/sinon-chai.js"]
+      "main": [
+        "lib/sinon-chai.js"
+      ]
     }
   }
 }

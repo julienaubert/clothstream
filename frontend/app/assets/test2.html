@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="https://getfirebug.com/firebug-lite.js">
+    {
+        overrideConsole: false,
+        startOpened: true,
+        enableTrace: true
+    }
+     </script>
+
+    <style type="text/css">
+
+    /* disable "overscroll" on mac-browsers */
+    html {
+        overflow: hidden;
+    }
+    /* end */
+
+    /* debug */
+    html {
+        background-color: greenyellow;
+    }
+    body {
+        background-color: yellow;
+    }
+    .rig {
+        background-color: #b3d4fc;
+    }
+    .rig li {
+        background-color: red;
+    }
+    /* end */
+
+    /* menu such that scroll is OVER the menu */
+    #menu {
+        position: absolute;
+        z-index: 0;
+        background-color: yellow;
+        width: 100%;
+        overflow-y: scroll;
+    }
+    /* end */
+
+    /* inf scroll */
+    html {
+        height: 100%;
+    }
+    body {
+        height: 100%;
+        margin: 0;
+        z-index: 1;
+    }
+    .rig {
+        overflow: auto;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    /* end */
+
+
+    .rig li {
+        height: 50px;
+    }
+    </style>
+    <script type="text/javascript">
+
+    function addEvent(evnt, elem, func) {
+       if (elem.addEventListener)  // W3C DOM
+          elem.addEventListener(evnt,func,false);
+       else if (elem.attachEvent) { // IE DOM
+          elem.attachEvent("on"+evnt, func);
+       }
+       else { // No much to do
+          elem[evnt] = func;
+       }
+    }
+
+    function init() {
+        console.log("loaded")
+
+        make_handler = function(type, elem) {
+            addEvent(type, elem, function(event) {
+                target = event.target || event.srcElement;
+                console.log(type + " event, on target id: " + target.id);
+            }, false);
+        };
+        make_handler("click", document.getElementById("test"));
+        make_handler("scroll", document.getElementById("test"));
+        make_handler("scroll", document.getElementById("body"));
+        make_handler("scroll", window);
+    }
+
+    </script>
+</head>
+<body id="body" onload="init()">
+
+<div id="menu">
+    Hello
+</div>
+
+
+<ul id="test" class="rig">
+    <li id="1">1</li>
+    <li id="2">2</li>
+    <li id="3">3</li>
+    <li id="4">4</li>
+    <li id="5">1</li>
+    <li id="6">2</li>
+    <li id="7">3</li>
+    <li id="8">4</li>
+    <li id="9">1</li>
+    <li id="10">2</li>
+    <li id="11">3</li>
+    <li id="12">4</li>
+    <li>test</li>
+    <li>test</li>
+    <li>test</li>
+    <li>test</li>
+    <li>test</li>
+    <li>test</li>
+    <li>test</li>
+    <li>LAST</li>
+</ul>
+
+</body>
+</html>

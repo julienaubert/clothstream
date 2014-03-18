@@ -8,20 +8,24 @@ require.register("scripts/pageLoader", function(exports, require, module) {
         // callback: function(props, page_loaded, json_data)
         //
         var self = this,
-            pages_loaded = 0,
-            response_pending = false,
-            no_more_pages = false;
+            pages_loaded = 0;
+
+        self.response_pending = false;
+        self.no_more_pages = false;
 
         self.loadPage = function(page) {
             // calls callback(data) on success.
             // promise callback(data) called max once per successful page
             //  i.e. does not call if loadPage is called again with same page, or if page is beyond available pages
+            if (page < 1) {
+                 throw new Error("Invalid page: '" + page + "'. Note: first page is '1'.");
+            }
             var already_loaded = page <= pages_loaded;
-            if (already_loaded || response_pending || no_more_pages)
+            if (already_loaded || self.no_more_pages || self.response_pending)
             {
                 return;
             }
-            response_pending = true;
+            self.response_pending = true;
             url = props.url + "?" +
                   "page_size=" + props.page_size +
                   "&page=" + page;
@@ -31,7 +35,7 @@ require.register("scripts/pageLoader", function(exports, require, module) {
                 success: function(data) {
                     pages_loaded += 1;
                     callback(props, pages_loaded, data);
-                    response_pending = false;
+                    self.response_pending = false;
                 },
                 error: function (xhr, status, exc) {
                     switch (xhr.status) {
@@ -39,7 +43,7 @@ require.register("scripts/pageLoader", function(exports, require, module) {
                             self.no_more_pages = true;
                             break;
                     }
-                    response_pending = false;
+                    self.response_pending = false;
                 }
             });
         }

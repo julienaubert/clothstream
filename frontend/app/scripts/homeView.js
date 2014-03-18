@@ -11,58 +11,33 @@ require.register("scripts/homeView", function(exports, require, module) {
 
     exports.HomeViewModel = function() {
         var self = this;
-
-        self.json_page_size = 10
         self.items = ko.observableArray([]);
-        self.items.extend({
-            infinitescroll: {}
-        });
+        self.items.extend({ infinitescroll: {} });
+        self.grid = ko.observable();
 
-        self.page_loader = new pageLoader.Sequential(
+        self.item_loader = new pageLoader.Sequential(
             {   url: "http://localhost:8000/item/items/",
-                page_size: 10
+                page_size: 20
             },
             function(props, page_loaded, data){
-                var offset = (page_loaded - 1) * props.page_size,
-                    i
-                for (i = 0; i < data.results.length; i++)
-                {
-                    self.items()[i + offset] = new Item(data.results[i]);
-                }
+                ko.utils.arrayPushAll(self.items, data.results);
                 self.items.valueHasMutated();
         });
 
-        // detect resize
-        $(window).resize(function() {
-            // TODO: remove from view model (DOM should connect to ViewModel, not reverse (like event: scrolled)
-            updateViewPortDimensions();
-        });
-
-
         self.scrolled = function(data, event) {
             var elem = event.target;
-            self.items.infinitescroll.scrollY(elem.scrollTop);
-            self.page_loader.loadPageForEntry(self.items.infinitescroll.lastVisibleIndex());
+            self.items.infinitescroll.scrollY($(elem).scrollTop());
+            self.item_loader.loadPageForEntry(self.items.infinitescroll.lastHiddenIndex());
         };
 
-        // update dimensions of infinite-scroll viewport and item
-        function updateViewPortDimensions() {
-            var itemsRef = $('#items'),
-                itemRef = $('.item').first(),
-                itemsWidth = itemsRef.width(),
-                itemsHeight = itemsRef.height(),
-                itemWidth = itemRef.outerWidth(),
-                itemHeight = itemRef.outerHeight();
+        self.grid.subscribe(function (grid) {
+            self.items.infinitescroll.viewportWidth(grid.viewport.width);
+            self.items.infinitescroll.viewportHeight(grid.viewport.height);
+            self.items.infinitescroll.itemWidth(grid.itemport.width);
+            self.items.infinitescroll.itemHeight(grid.itemport.height);
+        });
 
-            self.items.infinitescroll.viewportWidth(itemsWidth);
-            self.items.infinitescroll.viewportHeight(itemsHeight);
-            self.items.infinitescroll.itemWidth(itemWidth);
-            self.items.infinitescroll.itemHeight(itemHeight);
-        };
-
-
-        updateViewPortDimensions();
-        self.page_loader.loadPage(1);
+        self.item_loader.loadPage(1);
     };
 
 });

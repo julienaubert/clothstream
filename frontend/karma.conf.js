@@ -15,12 +15,17 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'bower_components/jquery/dist/jquery.js',
       'bower_components/commonjs-require-definition/require.js',
-      'bower_components/knockout.js/knockout.js',
+      'bower_components/knockout-3.1.0/index.js',
       'bower_components/mocha/mocha.js',
       'bower_components/chai/chai.js',
       'bower_components/sinon-chai/lib/sinon-chai.js',
       'bower_components/sinon/lib/sinon.js',
+      'bower_components/sinon/lib/sinon/call.js',
+      'bower_components/sinon/lib/sinon/spy.js',
+      'bower_components/sinon/lib/sinon/mock.js',
+
       'test/setup.js',
       'app/scripts/*.js',
       'test/tests/*.js'
@@ -37,7 +42,10 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
     reporters: ['dots', 'coverage'],
     coverageReporter: {
-      type : 'text'
+      reporters: [
+            {type: 'html', dir: 'coverage/'},
+            {type: 'lcov', dir: 'coverage/'}
+      ]
     },
     // the preprocessor configures which files should be tested for coverage.
     preprocessors: {
