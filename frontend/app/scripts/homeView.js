@@ -25,19 +25,22 @@ require.register("scripts/homeView", function(exports, require, module) {
         });
 
         self.scrolled = function(data, event) {
+            var scroller = self.items.infinitescroll;
             var elem = event.target;
             self.items.infinitescroll.scrollY($(elem).scrollTop());
-            self.item_loader.loadPageForEntry(self.items.infinitescroll.lastHiddenIndex());
+            self.item_loader.loadUntilEntry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding());
         };
 
         self.grid.subscribe(function (grid) {
-            self.items.infinitescroll.viewportWidth(grid.viewport.width);
-            self.items.infinitescroll.viewportHeight(grid.viewport.height);
-            self.items.infinitescroll.itemWidth(grid.itemport.width);
-            self.items.infinitescroll.itemHeight(grid.itemport.height);
+            var scroller = self.items.infinitescroll;
+            scroller.viewportWidth(grid.viewport.width);
+            scroller.viewportHeight(grid.viewport.height);
+            scroller.itemWidth(grid.itemport.width);
+            scroller.itemHeight(grid.itemport.height);
+            self.item_loader.loadUntilEntry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding());
         });
 
-        self.item_loader.loadPage(1);
+        self.item_loader.load(1);
     };
 
 });

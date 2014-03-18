@@ -29,7 +29,7 @@ require.register("scripts/pageLoader", function(exports, require, module) {
         self.response_pending = false;
         self.no_more_pages = false;
 
-        self.loadPage = function(page) {
+        self.load = function(page) {
             // calls callback(data) on success.
             // promise callback(data) called max once per successful page
             //  i.e. does not call if loadPage is called again with same page, or if page is beyond available pages
@@ -63,8 +63,30 @@ require.register("scripts/pageLoader", function(exports, require, module) {
                 }
             });
         }
-        self.loadPageForEntry = function(index) {
-            self.loadPage(1 + Math.floor(index / props.page_size));
+        self.loadRange = function(start, end) {
+            var i;
+            for (i = start; i < end; i++)
+            {
+                function wait(page) {
+                    if (self.response_pending) {
+                       setTimeout(function() {
+                           wait(page)
+                       }, 0);
+                    } else {
+                       self.load(page);
+                    }
+                }
+                wait(i);
+            }
+        }
+        self.pageFromEntry = function(index) {
+            return 1 + Math.floor(index / props.page_size);
+        }
+        self.loadForEntry = function(index) {
+            self.load(self.pageFromEntry(index));
+        }
+        self.loadUntilEntry = function(index) {
+            self.loadRange(1, self.pageFromEntry(index) + 1);
         }
     }
 
