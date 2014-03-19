@@ -15,21 +15,6 @@
         <script>
             // Enable Brunch HTML/CSS Auto Reload
             window.brunch = window.brunch || {};
-
-//                        <li class="item">
-//                <!-- ko if: $index() >= $root.items.infinitescroll.firstHiddenIndex() -->
-//                <div class=product-thumb>
-//                    <a data-bind="attr: { href: link, title: thumb_title }">
-//                        <img data-bind="attr: { src: thumb_image_url }">
-//                    </a>
-//                </div>
-//                <div class=product-info>
-//                    <a data-bind="attr: { href: link, title: thumb_title }">
-//                        <span data-bind="text: thumb_title"></span>
-//                    </a>
-//                </div>
-//                <!-- /ko -->
-//            </li>
         </script>
 
         <link rel="stylesheet" href="css/app.css">
@@ -38,7 +23,7 @@
     </head>
 
     <body>
-        <div id="menu">
+        <div class="menu">
         Hello
 
             <div style="font-size:0.5em">
@@ -110,6 +95,8 @@
             </div>
         </div>
 
+
+
         <ul id="items" class="rig columns-3"
             data-bind="foreach: items.infinitescroll.displayItems,
                     grid: grid,
@@ -124,8 +111,7 @@
                 <div class=product-info>
                     <a data-bind="attr: { href: link, title: thumb_title }">
                         <!--<span data-bind="text: thumb_title"></span>-->
-                        <strong>index:</strong>
-                        <span data-bind="text: $index"></span>
+                        <span data-bind="text: thumb_title"></span>
                     </a>
                 </div>
                 <!-- /ko -->

@@ -31,15 +31,22 @@
     .rig li {
         background-color: red;
     }
+    .menu {
+        background-color: green;
+    }
+
     /* end */
 
     /* menu such that scroll is OVER the menu */
-    #menu {
-        position: absolute;
-        z-index: 0;
-        background-color: yellow;
+    .menu {
+        display: block;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        right: 0;
         width: 100%;
-        overflow-y: scroll;
+        overflow-y: visible;
+        height: 50px;
     }
     /* end */
 
@@ -53,6 +60,8 @@
         z-index: 1;
     }
     .rig {
+        position: static;
+        top: 50px;
         overflow: auto;
         height: 100%;
         margin: 0;
@@ -97,7 +106,7 @@
 </head>
 <body id="body" onload="init()">
 
-<div id="menu">
+<div class="menu">
     Hello
 </div>
 

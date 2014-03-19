@@ -50,15 +50,15 @@ body {
 .rig li {
     background-color: red;
 }
-#menu {
+.menu {
     background-color: #feffdd;
-    opacity: 0.5;
+    opacity: 0.9;
 }
 
 
 /* menu styling
  */
-#menu {
+.menu {
     width: 100%;
 }
 
@@ -66,7 +66,7 @@ body {
 
 /* infinite scroll, scrollbar is rendered on the menu
  */
-#menu {
+.menu {
     position: absolute;
     z-index: 0;
     overflow-y: scroll;
