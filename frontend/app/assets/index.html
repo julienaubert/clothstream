@@ -25,8 +25,7 @@
             <li>Sign in</li>
             <li>Trending</li>
 
-
-            <div style="font-size:0.5em; display:None">
+            <div style="font-size:0.5em; display:none">
                 <!-- for control-check scrolling -->
                 <table>
                     <tr>
@@ -98,20 +97,34 @@
 
         </ul>
 
+        <div class="chosen-product"
+             data-bind="with: chosen_product,
+                        visible: active_view().product">
+            <div class="product-view">
+                <h1 data-bind="text: thumb_title"></h1>
+                <img data-bind="attr: { src: thumb_image_url }">
+            </div>
+            <div class="buy-button">
+                <a data-bind="attr: {href: link}">Buy</a>
+            </div>
+        </div>
+
+
         <ul class="rig columns-3"
             data-bind="foreach: items.infinitescroll.displayItems,
                     grid: grid,
-                    event: { scroll: scrolled }">
-            <li class="product-card" >
+                    event: { scroll: scrolled },
+                    visible: active_view().home">
+            <li class="product-card" data-bind="click: $root.go_to_product ">
                 <!-- ko if: $index() < $root.items.infinitescroll.lastHiddenIndex() -->
-                <a data-bind="attr: { href: link, title: thumb_title }">
+                <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
                     <div class=product-thumb>
                             <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
                     </div>
                     <div class=product-info>
                         <h3><span data-bind="text: thumb_title"></span></h3>
                     </div>
-                </a>
+                <!--</a>-->
                 <!-- /ko -->
             </li>
         </ul>

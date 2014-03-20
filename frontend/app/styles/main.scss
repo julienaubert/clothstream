@@ -16,6 +16,8 @@ $legacy-support-for-mozilla: false;
 @import "h5bp-4.3.0";
 @import "fixes";
 @import "default";
+@import "debug";
+
 
 //@import "singularitygs";
 
@@ -32,25 +34,6 @@ $legacy-support-for-mozilla: false;
 //
 
 
-
-
-
-
-/* debug
- */
-html {
-    background-color: greenyellow;
-}
-body {
-    background-color: yellow;
-}
-.rig {
-    background-color: #b3d4fc;
-}
-.menu {
-    background-color: #feffdd;
-    opacity: 0.9;
-}
 
 
 /* menu styling
@@ -86,6 +69,8 @@ body {
       margin-left: -2.5%; /* should match li left margin */
       width: 100%;
 }
+
+
 
 
 
