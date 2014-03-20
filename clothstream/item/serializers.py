@@ -8,4 +8,4 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Item
-        fields = ('uuid', 'thumb_title', 'thumb_image_url', 'link')
+        fields = ('id', 'uuid', 'thumb_title', 'thumb_image_url', 'link')
