@@ -16,11 +16,4 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        if settings.DEBUG:
-            # TODO: add as middleware
-            # so we can have django localhost:8000 and brunchwatch on localhost:3333
-            response["Access-Control-Allow-Origin"] = "*"
-            response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
-            response["Access-Control-Max-Age"] = "1000"
-            response["Access-Control-Allow-Headers"] = "*"
         return response

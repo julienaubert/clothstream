@@ -10,13 +10,20 @@ SKIP_SOUTH_TESTS = True
 SOUTH_TESTS_MIGRATE = False
 
 INSTALLED_APPS = INSTALLED_APPS + ('debug_toolbar', 'clothstream.demo')
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
 
 if 'djangosecure.middleware.SecurityMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
     MIDDLEWARE_CLASSES.remove('djangosecure.middleware.SecurityMiddleware')
     MIDDLEWARE_CLASSES = tuple(MIDDLEWARE_CLASSES)
+
+
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
+     # so we can have django localhost:8000 and brunchwatch on localhost:3333
+    'clothstream.lib.rest.AllowAllCrossOrigin',
+)
 
 SECRET_KEY = 'develop'
 
