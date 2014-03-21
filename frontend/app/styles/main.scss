@@ -21,6 +21,7 @@ $legacy-support-for-mozilla: false;
 
 
 .chosen-product {
+  clear: both;
 }
 
 .product-view {
@@ -80,6 +81,7 @@ body {
     z-index: 1;
 }
 .product-grid {
+    clear:both;
     overflow: auto;
     min-height: 500px;
     height: 100%;
@@ -88,9 +90,6 @@ body {
     margin-left: -2.5%; /* should match li left margin */
     width: 100%;
 }
-
-
-
 
 
 /* item-rig styling

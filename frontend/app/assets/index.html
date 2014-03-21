@@ -53,9 +53,7 @@
             <div data-bind="template: {name: debug_info}"></div>
 
             <ul class="product-grid columns-3"
-                data-bind="foreach: items.infinitescroll.displayItems,
-                           grid: grid,
-                           event: { scroll: scrolled }">
+                data-bind="grid: grid">
                 <li class="product-card" data-bind="click: $root.go_to_product ">
                     <!-- ko if: $index() < $parent.items.infinitescroll.lastHiddenIndex() -->
                     <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
