@@ -1,25 +1,16 @@
-require.register("scripts/homeView", function(exports, require, module) {
+require.register("scripts/masterView", function(exports, require, module) {
 
     var pageLoader = require('scripts/pageLoader')
-
 
 
     DiscoverView = function(template_name, item_repo) {
         var self = this;
         self.template_name = template_name;
-
-
-        self.grid = ko.observable();
         self.items = item_repo.items;
         self.item_by_dbid = item_repo.item_by_dbid;
 
         self.load = function(params) {
         }
-
-        self.context = {
-            items: item_repo.items,
-            grid: self.grid
-        };
 
         self.item_loader = new pageLoader.Sequential(
             {
@@ -42,16 +33,15 @@ require.register("scripts/homeView", function(exports, require, module) {
             self.item_loader.loadUntilEntry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding());
         };
 
-        self.grid.subscribe(function (grid) {
+        self.items.infinitescroll.lastVisibleIndex.subscribe(function (last_visible_index) {
+            if (last_visible_index == -1) {
+                return;
+            }
             var scroller = self.items.infinitescroll;
-            scroller.viewportWidth(grid.viewport.width);
-            scroller.viewportHeight(grid.viewport.height);
-            scroller.itemWidth(grid.itemport.width);
-            scroller.itemHeight(grid.itemport.height);
             self.item_loader.loadUntilEntry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding());
         });
-        self.item_loader.load(1);
 
+        self.item_loader.load(1);
     };
 
     ChosenProductView = function(template_name, item_repo) {
@@ -85,7 +75,7 @@ require.register("scripts/homeView", function(exports, require, module) {
         self.item_by_dbid = {};
     };
 
-    exports.HomeViewModel = function() {
+    exports.MasterViewModel = function() {
         var self = this;
 
         // SHARED COMPONENTS

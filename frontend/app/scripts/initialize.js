@@ -1,11 +1,10 @@
 require.register("scripts/initialize", function(exports, require, module) {
 
-    var homeView = require('scripts/homeView')
-
+    var masterView = require('scripts/masterView')
 
     ko.bindingHandlers.grid = {
         init: function(element, valueAccessor, allBindings, deprecated, bindingContext) {
-            items =  bindingContext.$data.items
+            items = valueAccessor()
 
             ko.applyBindingAccessorsToNode(element, {
                 foreach: function() { return bindingContext.$data.items },
@@ -17,17 +16,11 @@ require.register("scripts/initialize", function(exports, require, module) {
                 if (!item_ready) {
                     setTimeout(observe_once_item_ready, 5);
                 } else {
-                    var value = valueAccessor();
-                    value({
-                        viewport: {
-                            width: $(element).width(),
-                            height: $(element).height()
-                        },
-                        itemport: {
-                            width: $(element).children(":first").outerWidth(true),
-                            height: $(element).children(":first").outerHeight(true)
-                        }
-                    });
+                    var scroller = items.infinitescroll;
+                    scroller.viewportWidth($(element).width());
+                    scroller.viewportHeight($(element).height());
+                    scroller.itemWidth($(element).children(":first").outerWidth(true));
+                    scroller.itemHeight($(element).children(":first").outerHeight(true));
                 }
             }
             observe_once_item_ready();
@@ -40,8 +33,5 @@ require.register("scripts/initialize", function(exports, require, module) {
         }
     }
 
-
-    ko.applyBindings(new homeView.HomeViewModel());
-
-
+    ko.applyBindings(new masterView.MasterViewModel());
 });
