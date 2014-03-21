@@ -43,15 +43,13 @@ $legacy-support-for-mozilla: false;
 }
 
 
-
 /* infinite scroll, scrollbar is rendered on the menu
  */
 .menu {
-    position: absolute;
+    position: fixed;
     z-index: 0;
     top: 0;
-    margin: 0;
-    overflow-y: scroll;
+    margin-top: 0;
 }
 html {
     height: 100%;
@@ -61,13 +59,13 @@ body {
     margin: 0;
     z-index: 1;
 }
-.rig {
+.product-grid {
     overflow: auto;
-    height: 100%;
+    height: 500px;
     margin: 0;
     padding: 0;
-      margin-left: -2.5%; /* should match li left margin */
-      width: 100%;
+    margin-left: -2.5%; /* should match li left margin */
+    width: 100%;
 }
 
 
@@ -99,15 +97,15 @@ body {
 
 
 /* class for 2 columns */
-.rig.columns-2 li {
+.product-grid.columns-2 li {
   width: 47.5%; /* this value + 2.5 should = 50% */
 }
 /* class for 3 columns */
-.rig.columns-3 li {
+.product-grid.columns-3 li {
   width: 30.83%; /* this value + 2.5 should = 33% */
 }
 /* class for 4 columns */
-.rig.columns-4 li {
+.product-grid.columns-4 li {
   width: 22.5%; /* this value + 2.5 should = 25% */
 }
 
@@ -116,7 +114,7 @@ body {
     display: block;
     margin: 0 0 20px;
   }
-  .rig {
+  .product-grid {
     margin-left: 0;
   }
 }
