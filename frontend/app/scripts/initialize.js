@@ -29,6 +29,7 @@ require.register("scripts/initialize", function(exports, require, module) {
             $(window).resize(function () {
                 observe();
             });
+
         }
     }
 

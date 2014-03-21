@@ -2,11 +2,7 @@ require.register("scripts/homeView", function(exports, require, module) {
 
     var pageLoader = require('scripts/pageLoader')
 
-    function Item(data) {
-        this.thumb_title = ko.observable(data.thumb_title);
-        this.thumb_image_url = ko.observable(data.thumb_image_url);
-        this.link = ko.observable(data.link);
-    }
+
 
     DiscoverView = function(template_name, item_repo) {
         var self = this;

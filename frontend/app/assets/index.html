@@ -22,8 +22,10 @@
 
     <body>
         <ul class="menu">
+            <li>Discover</li>
+            <li>Collections</li>
             <li>Sign in</li>
-            <li>Trending</li>
+            <li>Sign up</li>
         </ul>
 
         <!-- ko with: active_view -->
@@ -31,21 +33,48 @@
             <!-- /ko -->
         <!-- /ko -->
 
-
         <script id="chosen_product.html" type="text/html">
             <div class="chosen-product"
                  data-bind="with: chosen_product">
                 <div class="product-view">
-                    <h1 data-bind="text: thumb_title"></h1>
                     <img data-bind="attr: { src: thumb_image_url }">
                 </div>
+                <h1 data-bind="text: thumb_title"></h1>
+                <div class="material-info" data-bind="text: material"></div>
+                <span class="price-info">
+                    <!-- ko text: local_currency --><!-- /ko -->:
+                    <!-- ko text: local_price --><!-- /ko -->
+                </span>
                 <a data-bind="attr: {href: link}"><span class="buy-button">Buy</span></a>
             </div>
         </script>
 
-
         <script id="discover.html" type="text/html">
+            <div data-bind="template: {name: debug_info}"></div>
 
+            <ul class="product-grid columns-3"
+                data-bind="foreach: items.infinitescroll.displayItems,
+                           grid: grid,
+                           event: { scroll: scrolled }">
+                <li class="product-card" data-bind="click: $root.go_to_product ">
+                    <!-- ko if: $index() < $parent.items.infinitescroll.lastHiddenIndex() -->
+                    <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
+                        <div class=product-thumb>
+                                <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
+                        </div>
+                        <div class=product-info>
+                            <h3><span data-bind="text: thumb_title"></span></h3>
+                        </div>
+                    <!--</a>-->
+                    <!-- /ko -->
+                </li>
+            </ul>
+
+        </script>
+
+
+
+        <script id="debug_info" type="text/html">
             <div class="menu" style="font-size:0.5em; display:block">
                 <!-- for control-check scrolling -->
                 <table>
@@ -114,26 +143,10 @@
                     </tr>
                 </table>
             </div>
-
-            <ul class="product-grid columns-3"
-                data-bind="foreach: items.infinitescroll.displayItems,
-                           grid: grid,
-                           event: { scroll: scrolled }">
-                <li class="product-card" data-bind="click: $root.go_to_product ">
-                    <!-- ko if: $index() < $parent.items.infinitescroll.lastHiddenIndex() -->
-                    <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
-                        <div class=product-thumb>
-                                <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
-                        </div>
-                        <div class=product-info>
-                            <h3><span data-bind="text: thumb_title"></span></h3>
-                        </div>
-                    <!--</a>-->
-                    <!-- /ko -->
-                </li>
-            </ul>
-
         </script>
+
+
+
 
         <script src="js/vendor.js"></script>
         <script src="js/app.js"></script>
@@ -146,5 +159,6 @@
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
+
     </body>
 </html>
