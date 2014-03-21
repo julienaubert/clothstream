@@ -17,6 +17,15 @@ $legacy-support-for-mozilla: false;
 @import "fixes";
 @import "default";
 @import "debug";
+@import "widgets";
+
+
+.chosen-product {
+}
+
+.product-view {
+  float:left;
+}
 
 
 //@import "singularitygs";
