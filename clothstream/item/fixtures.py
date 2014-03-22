@@ -31,19 +31,23 @@ def random_sample_item(SAMPLE_ITEMS=[]):
             reader = csv.reader(f)
             for row in reader:
                 SAMPLE_ITEMS.append(tuple(row))
-    name, filename, url = random.choice(SAMPLE_ITEMS)
-    return name, filename, url
+    return random.choice(SAMPLE_ITEMS)
 
 
-def item_factory(**kwargs):
-    item = G(Item, thumb_title='dummy', thumb_image='dummy', link='dummy')
-    name, filename, url = random_sample_item()
+def copy_photo(item, filename):
     dst = item.thumb_image.storage.path(filename)
     os.makedirs(str(Path(dst).parent), exist_ok=True)
     src = rel('sampledata', 'images', filename)
     shutil.copyfile(src, dst)
+
+
+def item_factory(**kwargs):
+    item = G(Item, thumb_title='dummy', thumb_image='dummy', link='dummy', material='dummy')
+    name, filename, url, material = random_sample_item()
+    copy_photo(item, filename)
     item.link = url
     item.thumb_image = filename
     item.thumb_title = name
+    item.material = material
     item.save()
     return item
