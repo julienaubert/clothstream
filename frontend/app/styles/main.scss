@@ -19,6 +19,11 @@ $legacy-support-for-mozilla: false;
 //@import "debug";
 @import "widgets";
 
+.body {
+  font-family:helvetica,arial,sans-serif;
+  font-size:10px;
+}
+
 
 .chosen-product {
   clear: both;
@@ -26,6 +31,22 @@ $legacy-support-for-mozilla: false;
 
 .product-view {
   float: left;
+}
+
+#filter-options-id {
+  clear: both;
+  margin-left: 20px;
+}
+
+#price-option-id {
+  background-color: #fefefe;
+  padding: 10px;
+  width: 250px;
+}
+
+#price-slider-id {
+  width:77%;
+  margin-top: 3px;
 }
 
 

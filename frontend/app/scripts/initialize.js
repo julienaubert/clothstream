@@ -2,13 +2,17 @@ require.register("scripts/initialize", function(exports, require, module) {
 
     var masterView = require('scripts/masterView')
 
-    ko.bindingHandlers.grid = {
+    ko.bindingHandlers.scrollgrid = {
         init: function(element, valueAccessor, allBindings, deprecated, bindingContext) {
             items = valueAccessor()
 
+            scrolled = function(data, event) {
+                items.infinitescroll.scrollY($(event.target).scrollTop());
+            }
+
             ko.applyBindingAccessorsToNode(element, {
                 foreach: function() { return bindingContext.$data.items },
-                event: function () { return { scroll: bindingContext.$data.scrolled } }
+                event: function () { return { scroll: scrolled } }
             }, bindingContext);
 
             observe_once_item_ready = function () {

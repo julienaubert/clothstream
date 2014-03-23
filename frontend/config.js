@@ -28,8 +28,10 @@ exports.config = {
       order: {
         before: [
           'bower_components/console-polyfill/index.js',
-          'bower_components/knockout.js/knockout.js',
           'bower_components/jquery/dist/jquery.js',
+          'bower_components/jqueryui/ui/jquery-ui.js',
+          'bower_components/knockout-3.1.0/index.js',
+          'bower_components/knockout-jqueryui.min/index.js',
         ]
       }
     },

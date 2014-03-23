@@ -1,8 +1,11 @@
 require.register("scripts/pageLoader", function(exports, require, module) {
 
 
-    exports.Sequential = function (props, callback)
+    exports.Sequential = function (page_size, url_callback, result_callback)
     {
+        // Loads pages from a json webservice: calls url_callback(page, page_size) to get an url, once get the response
+        // calls result_callback with (page_size, page, result)
+        //
         // PLANS:
         //  - separate as its own open-sourced component
         //  - have configurable expectations on webservice for page-traversal
@@ -17,12 +20,6 @@ require.register("scripts/pageLoader", function(exports, require, module) {
         //        and cache those results, and still call the callbacks in order
         //      - makes it easier to have a helper: a loadPagesUpToIndex(x) which will ensure all pages loads,
         //        not only the page x is on (but needs to be in order, so promise is perfect for this)
-
-        // props: {
-        //  page_size: <int>,
-        // }
-        // callback: function(props, page_loaded, json_data)
-        //
         var self = this,
             pages_loaded = 0;
 
@@ -42,15 +39,13 @@ require.register("scripts/pageLoader", function(exports, require, module) {
                 return;
             }
             self.response_pending = true;
-            url = props.url + "?" +
-                  "page_size=" + props.page_size +
-                  "&page=" + page;
+            url = url_callback(page_size, page);
             // guaranteed to load one at a time, as user cannot scroll down further until last request successful
             $.ajax({
                 url: url, dataType: 'json', async: true,
                 success: function(data) {
                     pages_loaded += 1;
-                    callback(props, pages_loaded, data);
+                    result_callback(page_size, pages_loaded, data);
                     self.response_pending = false;
                 },
                 error: function (xhr, status, exc) {
@@ -80,7 +75,7 @@ require.register("scripts/pageLoader", function(exports, require, module) {
             }
         }
         self.pageFromEntry = function(index) {
-            return 1 + Math.floor(index / props.page_size);
+            return 1 + Math.floor(index / page_size);
         }
         self.loadForEntry = function(index) {
             self.load(self.pageFromEntry(index));
