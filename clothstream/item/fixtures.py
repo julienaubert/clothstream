@@ -1,5 +1,6 @@
 """ Used to generate sampledata / test-data
 """
+from collections import namedtuple
 import os
 import random
 import shutil
@@ -25,12 +26,15 @@ def rel(*parts):
     return str(Path(__file__).parent.joinpath(*parts))
 
 
+CsvSampleItem = namedtuple('CsvSampleItem', 'name, filename, url, material, color')
+
+
 def random_sample_item(SAMPLE_ITEMS=[]):
     if len(SAMPLE_ITEMS) == 0:
         with open(rel('sampledata', 'sample.csv'), newline='', encoding='utf-8') as f:
             reader = csv.reader(f)
             for row in reader:
-                SAMPLE_ITEMS.append(tuple(row))
+                SAMPLE_ITEMS.append(CsvSampleItem(*row))
     return random.choice(SAMPLE_ITEMS)
 
 
@@ -43,11 +47,12 @@ def copy_photo(item, filename):
 
 def item_factory(**kwargs):
     item = G(Item, thumb_title='dummy', thumb_image='dummy', link='dummy', material='dummy')
-    name, filename, url, material = random_sample_item()
-    copy_photo(item, filename)
-    item.link = url
-    item.thumb_image = filename
-    item.thumb_title = name
-    item.material = material
+    sample = random_sample_item()
+    copy_photo(item, sample.filename)
+    item.link = sample.url
+    item.thumb_image = sample.filename
+    item.thumb_title = sample.name
+    item.material = sample.material
+    item.color = sample.color
     item.save()
     return item

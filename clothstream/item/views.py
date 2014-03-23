@@ -15,11 +15,13 @@ class ItemViewSet(viewsets.ModelViewSet):
 
     def filter_queryset(self, queryset):
         params = {k: self.request.QUERY_PARAMS.get(k) for k in self.request.QUERY_PARAMS}
-        if 'max_price' in params and params['max_price'] == 'max':
-            params.pop('max_price')
         qs = queryset
         if 'min_price' in params:
             qs = qs.filter(price__gte=params['min_price'])
         if 'max_price' in params:
             qs = qs.filter(price__lte=params['max_price'])
+        if 'colors' in params:
+            params['colors'] = [int(c) for c in params['colors'] if c.isdigit()]
+            if len(params['colors']):
+                qs = qs.filter(color__in=params['colors'])
         return super().filter_queryset(qs)

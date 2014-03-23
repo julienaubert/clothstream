@@ -1,0 +1,52 @@
+
+#filter-options-id {
+  clear: both;
+  margin-left: 20px;
+}
+
+#price-option-id {
+  float: left;
+  background-color: #fefefe;
+  padding: 10px;
+  width: 250px;
+}
+
+#price-slider-id {
+  width:77%;
+  margin-top: 3px;
+}
+
+
+#color-palette-option-id {
+  float: left;
+  width: 180px;
+
+  list-style-type: none;
+  // resets
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 0px;
+
+}
+
+.color-option {
+  float: left;
+  width: 1.5em;
+  height: 1.5em;
+  margin: 0.2em;
+  border: 1px solid #d3d3d3;
+  border-radius: 2px;
+}
+
+.color-option-toggled {
+  outline: 1px solid #000000;
+}
+
+.color-option-multi {
+  background:url("/multi.png") no-repeat;
+  background-size: 100% 100%;
+  padding-left: 0em;
+  display: block;
+}

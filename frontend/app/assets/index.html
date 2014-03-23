@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>Clothstream</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
@@ -37,19 +37,27 @@
             <!-- ko with: filter_view -->
             <div id="filter-options-id">
                 <div id="price-option-id">
-                    <span>SEK:</span>
-                        <span data-bind="text: min_price"></span> -
-                        <span data-bind="text: max_price"></span>
-                    </span>
+                    <span data-bind="text: price_filter.min"></span> -
+                    <span data-bind="text: price_filter.max"></span>
+                    <span>(SEK)</span>
                     <div id="price-slider-id" data-bind="slider: {
                         range: true,
                         min: 0,
-                        max: max_possible_price,
-                        values: price_values,
-                        slide: price_slide
+                        max: price_filter.max_possible,
+                        values: price_filter.values,
+                        slide: price_filter.slide
                      }">
                     </div>
                 </div>
+                <!-- ko with: color_filter -->
+                <ul id="color-palette-option-id" data-bind="foreach: options">
+                    <li class="color-option"
+                        data-bind="style: {'background-color': code},
+                                   css: {'color-option-toggled': toggled,
+                                         'color-option-multi': is_multi},
+                                   click: toggle"></li>
+                </ul>
+                <!-- /ko -->
             </div>
             <!-- /ko -->
         </script>

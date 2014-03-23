@@ -2,27 +2,90 @@ require.register("scripts/masterView", function(exports, require, module) {
 
     var pageLoader = require('scripts/pageLoader')
 
+    RangeFilter = function(initial_min, initial_max, max_possible) {
+        var self = this;
+        self.min = ko.observable(initial_min);
+        self.max = ko.observable(initial_max);
+        self.max_possible = ko.observable(max_possible);
+        self.values = ko.computed(function() {
+            return [self.min(), self.max()];
+        });
+
+        self.slide = function(event, ui) {
+            self.min(ui.values[0]);
+            self.max(ui.values[1]);
+        }
+    };
+
+
+    ColorOption = function(obj) {
+        var self = this;
+        self.id = obj.id;
+        self.name = obj.name;
+        self.code = obj.code;
+        self.toggled = ko.observable(obj.toggled);
+        self.toggle = function() {
+            self.toggled(!self.toggled());
+        }
+        self.is_multi = ko.computed(function() {
+            // TODO: read from a color_categories.js file which is a json-string used by front/back)
+            return self.id === 8;
+        });
+    }
+
+    ColorFilter = function() {
+        var self = this;
+
+        var dummy_js = [
+            // TODO: read from a color_categories.js file which is a json-string used by front/back)
+            {id: 0, name: 'DarkRed', code: '#8B0000', toggled: false},
+            {id: 1, name: 'DarkOliveGreen', code: '#556B2F', toggled: false},
+            {id: 2, name: 'FloralWhite', code: '#FFFAF0', toggled: false},
+            {id: 3, name: 'SaddleBrown', code: '#8B4513', toggled: false},
+            {id: 4, name: 'DarkBlue', code: '#00008B', toggled: false},
+            {id: 5, name: 'Black', code: '#222222', toggled: false},
+            {id: 6, name: 'Chocolate', code: '#D2691E', toggled: false},
+            {id: 7, name: 'Gold', code: '#FFD700', toggled: false},
+            {id: 9, name: 'Dummy', code: '#ff0000', toggled: false},
+            {id: 8, name: 'Multi-color', code: null, toggled: false}
+        ];
+
+        var make_options = function(json_obj) {
+            var i, opts = [];
+            for (i = 0; i < json_obj.length; i++) {
+                opts.push(new ColorOption(json_obj[i]))
+            }
+            return opts;
+        }
+
+        self.options = ko.observableArray(make_options(dummy_js));
+
+        self.all_toggled_id = ko.computed(function() {
+            var i, opts = self.options(), all_id = [];
+            for (i = 0; i < opts.length; i++) {
+                if (!opts[i].toggled()) {
+                    continue;
+                }
+                all_id.push(opts[i].id);
+            }
+            return all_id;
+        });
+    };
+
 
     ItemsFilter = function(dirty_callback) {
         var self = this;
-        self.min_price = ko.observable(0);
-        self.max_price = ko.observable(9999);
-        self.max_possible_price = ko.observable(9999);
-        self.price_values = ko.computed(function() {
-            return [self.min_price(), self.max_price()];
-        });
+        self.price_filter = new RangeFilter(0, 9999, 9999);
+        self.color_filter = new ColorFilter();
 
-        self.price_slide = function(event, ui) {
-            self.min_price(ui.values[0]);
-            self.max_price(ui.values[1]);
-        }
+
         self.dirty = ko.computed(function() {
-            dirty_callback(ko.toJS(self));
+            dirty_callback({
+                price: ko.toJS(self.price_filter),
+                colors: ko.toJS(self.color_filter.all_toggled_id())
+            });
         });
-
-
         self.dirty.extend({ rateLimit: 500 });
-
     };
 
 
@@ -80,8 +143,9 @@ require.register("scripts/masterView", function(exports, require, module) {
                   return "http://localhost:8000/item/items/?" +
                             "page_size=" + page_size +
                             "&page=" + page +
-                            "&min_price=" + filter.min_price +
-                            "&max_price=" + filter.max_price
+                            "&min_price=" + filter.price.min +
+                            "&max_price=" + filter.price.max +
+                            "&colors=" + filter.colors
                 },
                 function(props, page_loaded, data){
                     var i;

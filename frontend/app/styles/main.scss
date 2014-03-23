@@ -18,14 +18,18 @@ $legacy-support-for-mozilla: false;
 @import "default";
 //@import "debug";
 @import "widgets";
+@import "filter";
 
 .body {
   font-family:helvetica,arial,sans-serif;
   font-size:10px;
 }
 
-
 .chosen-product {
+  clear: both;
+}
+
+.chosen-product:before {
   clear: both;
 }
 
@@ -33,21 +37,6 @@ $legacy-support-for-mozilla: false;
   float: left;
 }
 
-#filter-options-id {
-  clear: both;
-  margin-left: 20px;
-}
-
-#price-option-id {
-  background-color: #fefefe;
-  padding: 10px;
-  width: 250px;
-}
-
-#price-slider-id {
-  width:77%;
-  margin-top: 3px;
-}
 
 
 //@import "singularitygs";

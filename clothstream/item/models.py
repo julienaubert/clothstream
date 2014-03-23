@@ -11,3 +11,4 @@ class Item(models.Model):
     link = models.URLField(_('URL'), help_text=_('Link to where the item can be purchased'))
     price = models.DecimalField(_('Price'), max_digits=6, decimal_places=2, help_text=_('Price in SEK of item'))
     material = models.TextField(_('Material'), help_text=_('Material description of item'))
+    color = models.IntegerField('Color classification', help_text=_('Color classification of item'))
