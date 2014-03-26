@@ -2,6 +2,14 @@ require.register("scripts/initialize", function(exports, require, module) {
 
     var masterView = require('scripts/masterView')
 
+    var auth = require('scripts/auth');
+
+    var csrf = require('scripts/csrf');
+
+
+    $.csrfAjax = csrf.setup_csrf_ajax();
+
+
     ko.bindingHandlers.scrollgrid = {
         init: function(element, valueAccessor, allBindings, deprecated, bindingContext) {
             items = valueAccessor()
@@ -9,6 +17,7 @@ require.register("scripts/initialize", function(exports, require, module) {
             scrolled = function(data, event) {
                 items.infinitescroll.scrollY($(event.target).scrollTop());
             }
+
 
             ko.applyBindingAccessorsToNode(element, {
                 foreach: function() { return bindingContext.$data.items },
@@ -35,7 +44,7 @@ require.register("scripts/initialize", function(exports, require, module) {
             });
             return { controlsDescendantBindings: true };
         }
-    }
+    };
 
-    ko.applyBindings(new masterView.MasterViewModel());
+    ko.applyBindings(new masterView.MasterViewModel(auth.create_facebook_auth(), new ItemRepository()));
 });

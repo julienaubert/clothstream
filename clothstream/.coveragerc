@@ -6,6 +6,8 @@ include =
 omit =  **/migrations/**
         **/settings/**
         **/tests/**
+        *wsgi.py
+        *fixtures.py
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -25,4 +27,4 @@ exclude_lines =
 ignore_errors = True
 
 [html]
-directory = build/coverage
+directory = htmlcov

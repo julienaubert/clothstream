@@ -1,21 +1,5 @@
-from django.conf import settings
-from django.conf.urls import patterns, url, include
-from rest_framework import routers
+from clothstream.lib.rest import SharedAPIRootRouter
 from .views import ItemViewSet
 
-router = routers.DefaultRouter()
+router = SharedAPIRootRouter()
 router.register(r'items', ItemViewSet)
-
-
-urlpatterns = patterns(
-    '',
-    url(r'^', include(router.urls)),
-)
-
-
-if settings.DEBUG:
-    urlpatterns += patterns(
-        '',
-        url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-    )
-[]

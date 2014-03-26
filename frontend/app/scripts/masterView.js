@@ -140,7 +140,7 @@ require.register("scripts/masterView", function(exports, require, module) {
             var item_loader = new pageLoader.Sequential(
                 20,
                 function(page_size, page) {
-                  return "http://localhost:8000/item/items/?" +
+                  return "http://localhost:8000/api/items/?" +
                             "page_size=" + page_size +
                             "&page=" + page +
                             "&min_price=" + filter.price.min +
@@ -173,11 +173,14 @@ require.register("scripts/masterView", function(exports, require, module) {
     };
 
 
-    exports.MasterViewModel = function() {
+    exports.MasterViewModel = function(auth /* auth.Facebook, see auth.js */,
+                                       item_repo /* ItemRepository */) {
         var self = this;
 
         // SHARED COMPONENTS
-        self.item_repo = new ItemRepository();
+        self.item_repo = item_repo;
+        self.auth = auth;
+
 
         // VIEWS
         self.views = {

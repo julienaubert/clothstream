@@ -2,3 +2,5 @@ Release 0.1 (dev)
 -----------------
 
 * Initial release
+
+* facebook login: uses python-social-auth (oath2): lib is production-ready, and easy to hook up other sign-in methods

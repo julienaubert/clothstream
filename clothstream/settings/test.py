@@ -25,12 +25,18 @@ SUPPORTED_DATABASES = {
         'PORT': '',
         'USER': 'postgres',
         'PASSWORD': '',
-        'CONN_MAX_AGE': None
+        'CONN_MAX_AGE': 0
     }
 }
+
+SOCIAL_AUTH_FACEBOOK_KEY = '230332697163931'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'd216e14487072824ef7e7e244db49571'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
 
 db = os.environ.get('database', 'postgres')
 if db not in SUPPORTED_DATABASES:
     raise Exception('Unknown database `%s`' % db)
 
 DATABASES = {'default': SUPPORTED_DATABASES[db]}
+

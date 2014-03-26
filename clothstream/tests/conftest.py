@@ -1,16 +1,23 @@
 import os
 import sys
+from pathlib import Path
+# py.test messes up sys.path, must add manually
+# (note: do not have __init__.py in project if project and app has same name, python takes "top package" and will
+# import from project instead of from app)
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from django.conf import settings
+from six import text_type
+
 
 
 def pytest_configure(config):
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'clothstream.clothstream.settings.test')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'clothstream.settings.test')
 
     # http://djangosnippets.org/snippets/646/
     class InvalidVarException(object):
         def __mod__(self, missing):
             try:
-                missing_str = unicode(missing)
+                missing_str = text_type(missing)
             except:
                 missing_str = 'Failed to create string representation'
             raise Exception('Unknown template variable %r %s' % (missing, missing_str))
@@ -35,19 +42,3 @@ def pytest_configure(config):
     settings.PASSWORD_HASHERS = [
         'django.contrib.auth.hashers.MD5PasswordHasher',
     ]
-
-
-def runtests(args=None):
-    import pytest
-
-    if not args:
-        args = []
-
-    if not any(a for a in args[1:] if not a.startswith('-')):
-        args.append('clothstream')
-
-    sys.exit(pytest.main(args))
-
-
-if __name__ == '__main__':
-    runtests(sys.argv)

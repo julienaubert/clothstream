@@ -1,5 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework.routers import SimpleRouter, DefaultRouter
 
 
 class HyperlinkedFileField(serializers.FileField):
@@ -8,14 +9,39 @@ class HyperlinkedFileField(serializers.FileField):
         return request.build_absolute_uri(value.url)
 
 
-class AllowAllCrossOrigin():
-    """ allows cross-origin - only if settings.DEBUG
-    (useful if front-end/back-end does not have same origin during development)
-    """
+class ConsoleDebug():
     def process_response(self, request, response):
-        if settings.DEBUG:
-            response["Access-Control-Allow-Origin"] = "*"
-            response["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
-            response["Access-Control-Max-Age"] = "1000"
-            response["Access-Control-Allow-Headers"] = "*"
+        print("\n=== REQUEST PROCESSED ===")
+        for key in ['user', 'path', 'method', 'COOKIES']:
+            if hasattr(request, key):
+                print("request." + key, ":", getattr(request, key))
+
+        def http_headers():
+            headers = dict()
+            for k, v in request.META.items():
+                if k.startswith('HTTP_'):
+                    headers[k[5:]] = v
+                elif k in ['CONTENT_LENGTH', 'CONTENT_TYPE']:
+                    headers[k] = v
+            return headers
+
+        print("headers:")
+        for k, v in http_headers().items():
+            print("\t {}: {}".format(k, v))
+
+        for key in ['data', 'status_code', 'reason_phrase', 'cookies']:
+            if hasattr(response, key):
+                if key == 'data':
+                    print("response." + key, ":", str(getattr(response, key))[:50])
+                else:
+                    print("response." + key, ":", getattr(response, key))
+
         return response
+
+
+class SharedAPIRootRouter(SimpleRouter):
+    common_api = DefaultRouter()
+
+    def register(self, *args, **kwargs):
+        self.common_api.register(*args, **kwargs)
+        super().register(*args, **kwargs)
