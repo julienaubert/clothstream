@@ -19,4 +19,4 @@ markdown
 django-filter
 
 # for sampledata
-git+https://github.com/julienaubert/django-dynamic-fixture@feature/py3_support#egg=django_dynamic_fixture
+django_dynamic_fixture
