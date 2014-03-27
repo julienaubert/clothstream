@@ -28,7 +28,7 @@ def pytest_configure(config):
 
     # override a few things with our test specifics
     settings.INSTALLED_APPS = tuple(settings.INSTALLED_APPS) + (
-        'tests',
+        'clothstream.tests',
     )
 
     # This speeds up the tests considerably, pbkdf2 is by design, slow.
