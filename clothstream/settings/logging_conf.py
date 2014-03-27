@@ -7,7 +7,7 @@ except:
     # py2.7 does not have exist_ok
     try:
         os.makedirs(CLOTHSTREAM_LOG_DIR)
-    except TypeError:
+    except OSError:
         pass
 
 
