@@ -27,7 +27,7 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + (
 
 if 'CONN_MAX_AGE' in DATABASES['default']:
     # The development server creates a new thread for each request it handles,
-    # negating the effect of persistent connections. Don’t enable them during development.
+    # negating the effect of persistent connections. Don't enable them during development.
     DATABASES['default']['CONN_MAX_AGE'] = 0
 
 
