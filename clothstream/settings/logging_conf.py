@@ -1,7 +1,14 @@
 import os
 from .base import CLOTHSTREAM_LOG_DIR
 
-os.makedirs(CLOTHSTREAM_LOG_DIR, exist_ok=True)
+try:
+    os.makedirs(CLOTHSTREAM_LOG_DIR, exist_ok=True)
+except:
+    # py2.7 does not have exist_ok
+    try:
+        os.makedirs(CLOTHSTREAM_LOG_DIR)
+    except TypeError:
+        pass
 
 
 def file_handler(name, level):
