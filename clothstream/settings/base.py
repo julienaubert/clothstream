@@ -103,6 +103,7 @@ INSTALLED_APPS = (
     'clothstream',
     'rest_framework',
     'clothstream.item',
+    'clothstream.collection',
     'clothstream.auth',
     'social.apps.django_app.default',
 )

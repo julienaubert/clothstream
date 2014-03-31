@@ -1,11 +1,10 @@
-from django.conf import settings
 from rest_framework import serializers
 from rest_framework.routers import SimpleRouter, DefaultRouter
 
 
 class HyperlinkedFileField(serializers.FileField):
     def to_native(self, value):
-        request = self.context.get('request', None)
+        request = self.context.get('request')
         return request.build_absolute_uri(value.url)
 
 
@@ -45,3 +44,4 @@ class SharedAPIRootRouter(SimpleRouter):
     def register(self, *args, **kwargs):
         self.common_api.register(*args, **kwargs)
         super().register(*args, **kwargs)
+

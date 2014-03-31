@@ -10,17 +10,6 @@ import csv
 from .models import Item
 from django_dynamic_fixture import G
 
-from django_dynamic_fixture.fixture_algorithms.sequential_fixture import SequentialDataFixture
-
-
-class DataFixture(SequentialDataFixture):
-    def uuidfield_config(self, field, key):
-        if hasattr(field, '_create_uuid'):
-            value = field._create_uuid()
-        else:
-            raise NotImplementedError()
-        return str(value)
-
 
 def rel(*parts):
     return str(Path(__file__).parent.joinpath(*parts))
@@ -45,14 +34,17 @@ def copy_photo(item, filename):
     shutil.copyfile(src, dst)
 
 
-def item_factory(**kwargs):
-    item = G(Item, thumb_title='dummy', thumb_image='dummy', link='dummy', material='dummy')
+def item_factory(with_statics=False, **kwargs):
+    if 'price' not in kwargs:
+        kwargs['price'] = random.randint(50, 10000)
+    item = G(Item, **kwargs)
     sample = random_sample_item()
-    copy_photo(item, sample.filename)
-    item.link = sample.url
-    item.thumb_image = sample.filename
-    item.thumb_title = sample.name
-    item.material = sample.material
-    item.color = sample.color
+    if with_statics:
+        copy_photo(item, kwargs.get('thumb_image', sample.filename))
+    item.link = kwargs.get('link', sample.url)
+    item.thumb_image = kwargs.get('thumb_image', sample.filename)
+    item.thumb_title = kwargs.get('thumb_title', sample.name)
+    item.material = kwargs.get('material', sample.material)
+    item.color = kwargs.get('color', sample.color)
     item.save()
     return item

@@ -2,13 +2,16 @@
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.management import BaseCommand
+from clothstream.collection.fixtures import collection_factory
 from clothstream.item.fixtures import item_factory
 from optparse import make_option
 
 
-def generate(item_count=100, **kwargs):
+def generate(item_count=100, collection_count=10, **kwargs):
     for _ in range(item_count):
-        item_factory(**kwargs)
+        item_factory(with_statics=True)
+    for _ in range(collection_count):
+        collection_factory()
 
 
 def localhost_site():
@@ -24,6 +27,11 @@ class Command(BaseCommand):
             dest='item_count',
             default=100,
             help='Number of items to generate'),
+        make_option('--collection-count',
+            action='store',
+            dest='collection_count',
+            default=10,
+            help='Number of collections to generate'),
         )
     help = 'Generate sample data'
 

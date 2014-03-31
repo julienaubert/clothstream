@@ -4,7 +4,8 @@ require.register("scripts/facebook_sdk", function(exports, require, module) {
         if (typeof(FB) == 'undefined') {
             jQuery.ajax({
                 type: "GET",
-                url: "//connect.facebook.net/en_US/all/debug.js",
+                url: "//connect.facebook.net/en_US/all.js",
+//                url: "//connect.facebook.net/en_US/all/debug.js",
                 success: function() {
                     FB.init({
                         appId: '230332697163931',

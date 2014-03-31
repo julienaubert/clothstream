@@ -1,0 +1,15 @@
+
+
+= Why is the url 'collection-create-list' for creating collections? (or collection-update-detail for updates) =
+
+The two views (create and list) were separated (they really do not have much in common...). Hence, cannot be on same
+url (unless a third view was introduced and triggered the right view).
+
+Django Rest Framework (DRF) routers assumes that creation (POST) and listing (GET) occurs on same url,
+e.g. 'api/collections/', and gives it the name 'collection-list'.
+
+Since two views cannot be on the same url, we register create with base-name 'collection-create' which becomes
+'collision-create-list' (since DRF assumes create is on the 'list').
+
+=> Yes, a bit quirky, but very easy to do. (Other option is to write a new DefaultRouter, or merge create/list view)
+

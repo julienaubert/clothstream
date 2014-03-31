@@ -4,7 +4,7 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from social.apps.django_app.utils import strategy, load_strategy
-from social.apps.django_app.views import _do_login
+from clothstream.auth.serializers import UserLoginSerializer
 
 
 @csrf_exempt
@@ -22,7 +22,8 @@ def register_by_access_token(request, backend):
     if user:
         strategy = load_strategy(request=request, backend=backend)
         login(strategy.request, user)
-        return Response("User {} logged in".format(user), status=status.HTTP_200_OK )
+        serializer = UserLoginSerializer(instance=user, context={'request': request})
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     else:
         return Response("Bad Credentials", status=403)
 

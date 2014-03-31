@@ -25,9 +25,9 @@
 
         <div class="fb-like" data-send="true" data-width="450" data-show-faces="true"></div>
         <ul class="menu">
-            <li>Discover</li>
-            <li>Collections</li>
-            <li>
+            <li class="menu-item" data-bind="click: $root.go_to_discover">Discover</li>
+            <li class="menu-item" data-bind="click: $root.go_to_collections">Collections</li>
+            <li class="menu-item">
                 <div class="fb-login-button"
                      data-max-rows="1"
                      data-size="large"
@@ -38,7 +38,7 @@
                 <div class="logout-button"
                      data-bind="visible: auth.show_logout,
                                 click: auth.logout">
-                    Sign out
+                     <span data-bind="text: user().name"></span>
                 </div>
             </li>
         </ul>
@@ -48,6 +48,26 @@
             <!-- /ko -->
         <!-- /ko -->
 
+<!--APP: product.app -->
+        <script id="chosen_product.html" type="text/html">
+            <div class="chosen-product"
+                 data-bind="with: product">
+                <div class="product-view">
+                    <img data-bind="attr: { src: thumb_image_url }">
+                </div>
+                <h1 data-bind="text: thumb_title"></h1>
+                <div class="material-info" data-bind="text: material"></div>
+                <span class="price-info">
+                    <!-- ko text: local_currency --><!-- /ko -->:
+                    <!-- ko text: local_price --><!-- /ko -->
+                </span>
+                <a data-bind="attr: {href: link}"><span class="buy-button">Buy</span></a>
+            </div>
+        </script>
+<!--END APP -->
+
+
+<!--APP: discover.app -->
         <script id="filter_view.html" type="text/html">
             <!-- ko with: filter_view -->
             <div id="filter-options-id">
@@ -77,119 +97,155 @@
             <!-- /ko -->
         </script>
 
-        <script id="chosen_product.html" type="text/html">
-            <div class="chosen-product"
-                 data-bind="with: chosen_product">
-                <div class="product-view">
-                    <img data-bind="attr: { src: thumb_image_url }">
-                </div>
-                <h1 data-bind="text: thumb_title"></h1>
-                <div class="material-info" data-bind="text: material"></div>
-                <span class="price-info">
-                    <!-- ko text: local_currency --><!-- /ko -->:
-                    <!-- ko text: local_price --><!-- /ko -->
-                </span>
-                <a data-bind="attr: {href: link}"><span class="buy-button">Buy</span></a>
-            </div>
-        </script>
-
         <script id="discover.html" type="text/html">
+            <!--<div data-bind="template: {name: 'scrollgrid_debug.html',-->
+                                       <!--data: $data.item_repo.objects.infinitescroll}"></div>-->
+
             <div data-bind="template: 'filter_view.html'"></div>
 
-            <div data-bind="template: {name: debug_info}"></div>
-
             <ul class="product-grid columns-3"
-                data-bind="scrollgrid: items">
-                <li class="product-card" data-bind="click: $root.go_to_product ">
-                    <!-- ko if: $index() < $parent.items.infinitescroll.lastHiddenIndex() -->
+                data-bind="scrollgrid: item_repo.objects">
+                <li class="product-card" data-bind="attr: { id: 'product-card-id-' + $index() },
+                                                    click: $root.go_to_product ">
+                    <!-- ko if: $index() < $parent.item_repo.objects.infinitescroll.lastHiddenIndex() -->
                     <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
-                        <div class=product-thumb>
+                        <div class="product-thumb">
                                 <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
                         </div>
-                        <div class=product-info>
+                        <a data-bind="attr: {href: link},
+                                      domClick,
+                                      hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
+                            <span class="product-overlay-button product-buy">Buy</span>
+                        </a>
+                        <a data-bind="attr: {href: link},
+                                      click: $parent.add_to_collection,
+                                      clickBubble: false,
+                                      hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
+                            <span class="product-overlay-button product-save">Add</span>
+                        </a>
+
+                        <div class="product-overlay-detail">
+                        </div>
+                        <div class="product-info">
                             <h3><span data-bind="text: thumb_title"></span></h3>
                         </div>
                     <!--</a>-->
                     <!-- /ko -->
                 </li>
             </ul>
+        </script>
+<!--END APP -->
+
+
+<!--APP: collections.app -->
+        <script id="collections.html" type="text/html">
+            <!--<div data-bind="template: {name: 'scrollgrid_debug.html',-->
+                                       <!--data: collections().objects.infinitescroll}"></div>-->
+            <ul class="collections-menu">
+                <li data-bind="click: create_new">New</li>
+            </ul>
+
+            <div data-bind="if: collection_to_delete">
+                <div data-bind="confirmDialog: {title: 'Delete your collection?',
+                                                target: collection_to_delete,
+                                                cancel_text: 'Cancel',
+                                                confirm_text: 'Delete now',
+                                                confirm_click: confirm_delete
+                                                }
+                               ">
+                    <div data-bind="with: collection_to_delete">
+                        <p><strong data-bind="text: title"></strong></p>
+                        <p>This collection will disappear, any shared link to it will stop working. This cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="collection-grid columns-3"
+                data-bind="scrollgrid: collections().objects">
+                <li class="collection-card">
+                    <input class="collection-info" type="text" data-bind="textInput, value: title">
+                    <input class="collection-info" type="text" data-bind="textInput, value: description">
+
+                    <div data-bind="click: $parent.delete">Delete</div>
+
+
+
+                    <ul class="collection-items" data-bind="foreach: items">
+                        <li class="collection-item">
+                            <img data-bind="attr: { src: thumb_image_url }">
+                        </li>
+                    </ul>
+                </li>
+            </ul>
 
         </script>
+<!--END APP -->
 
 
-
-        <script id="debug_info" type="text/html">
+<!--LIB -->
+        <script id="scrollgrid_debug.html" type="text/html">
             <div class="menu" style="clear: both; font-size:0.5em; display:block">
-                <!-- for control-check scrolling -->
                 <table>
                     <tr>
                         <td>
-                            <strong>Total items:</strong>
-                            <span data-bind="text: items().length"></span>
-                        </td>
-                        <td>
                             <strong>Display items:</strong>
-                            <span data-bind="text: items.infinitescroll.displayItems().length"></span>
+                            <span data-bind="text: displayItems().length"></span>
                         </td>
                         <td>
                             <strong>Rendered items:</strong>
-                            <span data-bind="text: items.infinitescroll.displayItems().length - items.infinitescroll.firstHiddenIndex()"></span>
+                            <span data-bind="text: displayItems().length - firstHiddenIndex()"></span>
                         </td>
                         <td>
                             <strong>Nr rows:</strong>
-                            <span data-bind="text: items.infinitescroll.numRowsPerPage()"></span>
+                            <span data-bind="text: numRowsPerPage()"></span>
                         </td>
                         <td>
                             <strong>Nr cols:</strong>
-                            <span data-bind="text: items.infinitescroll.numColsPerPage()"></span>
+                            <span data-bind="text: numColsPerPage()"></span>
                         </td>
                     </tr>
-
                     <tr>
                         <td>
                             <strong>Num items per page:</strong>
-                            <span data-bind="text: items.infinitescroll.numItemsPerPage()"></span>
+                            <span data-bind="text: numItemsPerPage()"></span>
 
                         </td>
                         <td>
                             <strong>First visible item index:</strong>
-                            <span data-bind="text: items.infinitescroll.firstVisibleIndex()"></span>
+                            <span data-bind="text: firstVisibleIndex()"></span>
                         </td>
                         <td>
                             <strong>Last visible item index:</strong>
-                            <span data-bind="text: items.infinitescroll.lastVisibleIndex()"></span>
+                            <span data-bind="text: lastVisibleIndex()"></span>
                         </td>
                         <td>
                             <strong>First/last hidden index:</strong>
-                            <span data-bind="text: items.infinitescroll.firstHiddenIndex()"></span>,
-                            <span data-bind="text: items.infinitescroll.lastHiddenIndex()"></span>
+                            <span data-bind="text: firstHiddenIndex()"></span>,
+                            <span data-bind="text: lastHiddenIndex()"></span>
                         </td>
                     </tr>
-
-
                     <tr>
                         <td>
                             <strong>container w/h: </strong>
-                            <span data-bind="text: items.infinitescroll.viewportWidth() + 'px / ' + items.infinitescroll.viewportHeight() + 'px'"></span>
+                            <span data-bind="text: viewportWidth() + 'px / ' + viewportHeight() + 'px'"></span>
                         </td>
                         <td>
                             <strong>each item w/h: </strong>
-                            <span data-bind="text: items.infinitescroll.itemWidth() + 'px / ' + items.infinitescroll.itemHeight() + 'px'"></span>
+                            <span data-bind="text: itemWidth() + 'px / ' + itemHeight() + 'px'"></span>
                         </td>
                         <td>
                             <strong>ScrollY: </strong>
-                            <span data-bind="text: items.infinitescroll.scrollY()"></span>
+                            <span data-bind="text: scrollY()"></span>
                         </td>
                         <td>
                             <strong>ScrollYOffset: </strong>
-                            <span data-bind="text: items.infinitescroll.scrollYOffset()"></span>
+                            <span data-bind="text: scrollYOffset()"></span>
                         </td>
                     </tr>
                 </table>
             </div>
         </script>
-
-
+<!--END LIB -->
 
 
         <script src="js/vendor.js"></script>

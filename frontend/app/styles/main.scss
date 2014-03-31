@@ -19,47 +19,25 @@ $legacy-support-for-mozilla: false;
 //@import "debug";
 @import "widgets";
 @import "filter";
+@import "apps/collections";
+@import "apps/discover";
+@import "apps/product";
+
 
 .body {
   font-family:helvetica,arial,sans-serif;
   font-size:10px;
 }
 
-.chosen-product {
-  clear: both;
-}
-
-.chosen-product:before {
-  clear: both;
-}
-
-.product-view {
-  float: left;
-}
-
-
-
-//@import "singularitygs";
-
-//
-//$break: 700px;
-//$break2: 900px;
-//$break3: 1200px;
-//
-//$grids: add-grid(2);
-//$grids: add-grid(2 8 2 1 at $break);
-//$grids: add-grid(12 at $break2);
-//$grids: add-grid(1 3 5 7 9 at $break3);
-//$gutters: add-gutter(1/3);
-//
-
-
-
 
 /* menu styling
  */
 .menu {
     width: 100%;
+}
+
+.menu-item {
+    cursor: pointer;
 }
 
 
@@ -89,62 +67,4 @@ body {
     height: 100%;
     margin: 0;
     z-index: 1;
-}
-.product-grid {
-    clear:both;
-    overflow: auto;
-    min-height: 500px;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    margin-left: -2.5%; /* should match li left margin */
-    width: 100%;
-}
-
-
-/* item-rig styling
- */
-
-.product-card {
-    max-width: 180px;
-    max-width: 180px;
-    border: 1px solid #feffdd;
-    display: inline-block;
-    padding-left: 0.2em;
-    padding-right: 0.2em;
-    padding-bottom: 0em;
-    padding-top: 0em;
-    margin: 0 0 2.5% 2.5%;
-    background: #fff;
-}
-
-.product-thumb {
-}
-
-.product-info {
-  font-size: 0.6em;
-}
-
-
-/* class for 2 columns */
-.product-grid.columns-2 li {
-  width: 47.5%; /* this value + 2.5 should = 50% */
-}
-/* class for 3 columns */
-.product-grid.columns-3 li {
-  width: 30.83%; /* this value + 2.5 should = 33% */
-}
-/* class for 4 columns */
-.product-grid.columns-4 li {
-  width: 22.5%; /* this value + 2.5 should = 25% */
-}
-
-@media (max-width: 480px) {
-  .product-card {
-    display: block;
-    margin: 0 0 20px;
-  }
-  .product-grid {
-    margin-left: 0;
-  }
 }

@@ -22,7 +22,7 @@
     "lodash": "~2",
     "font-awesome": "~4",
     "knockout-js-infinite-scroll": "julienaubert/knockout-js-infinite-scroll#add_tests",
-    "knockout-3.1.0": "http://knockoutjs.com/downloads/knockout-3.1.0.js",
+    "knockout-3.1.0.debug": "http://knockoutjs.com/downloads/knockout-3.1.0.debug.js",
     "sammy": "https://raw.github.com/quirkey/sammy/v0.7.5/lib/sammy.js",
     "speakingurl": "~0.9",
     "jqueryui": "~1.10.4",

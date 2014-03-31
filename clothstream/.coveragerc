@@ -8,6 +8,7 @@ omit =  **/migrations/**
         **/tests/**
         *wsgi.py
         *fixtures.py
+        *sampledata.py
 
 [report]
 # Regexes for lines to exclude from consideration
