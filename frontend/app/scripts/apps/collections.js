@@ -22,30 +22,20 @@ require.register("scripts/collections", function(exports, require, module) {
     var CollectionsView = function(template_name, item_repo, collection_repo, collection_owner) {
         var self = this;
         self.template_name = template_name;
-        self.item_repo = item_repo;
-        self.collections = ko.observable(collection_repo.create_filter());
-        self.collections().objects.extend({ infinitescroll: {} });
 
-        self.load = function(params) {
-        };
-
-        collection_owner.subscribe(function() {
-            if (collection_owner().collections()) {
-                self.collections(collection_owner().collections());
-                self.collections().load_until_entry(20);
-                self.collections().objects.extend({ infinitescroll: {} });
-                self.collections().objects.infinitescroll.lastVisibleIndex.subscribe(function (last_visible_index) {
-                    if (last_visible_index == -1) {
-                        return;
-                    }
-                    var scroller = self.collections().objects.infinitescroll;
-                    self.collections().load_until_entry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding())
-                });
-            } else {
-                self.collections(collection_repo.create_filter());
+        self.collections = collection_repo.create_filter();
+        self.collections.objects.extend({ infinitescroll: {} });
+        self.collections.objects.infinitescroll.lastVisibleIndex.subscribe(function (last_visible_index) {
+            if (last_visible_index == -1) {
+                return;
             }
+            var scroller = self.collections.objects.infinitescroll;
+            self.collections.load_until_entry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding())
         });
 
+        self.load = function(params) {
+            self.collections.load_until_entry(20);
+        };
 
         self.collection_to_delete = ko.observable(null);
 
@@ -56,7 +46,7 @@ require.register("scripts/collections", function(exports, require, module) {
         self.confirm_delete = function(collection, event) {
             collection = ko.unwrap(collection);
             collection_repo.delete(ko.unwrap(collection.id), function() {
-                self.collections().objects.remove(collection);
+                self.collections.objects.remove(collection);
             });
             self.collection_to_delete(null);
         };
@@ -64,9 +54,17 @@ require.register("scripts/collections", function(exports, require, module) {
         self.create_new = function(params) {
             var data = {title: 'New collection', items: []};
             collection_repo.create(data, function(obj) {
-                // we do not filter/sort the collections, so push it immediately to be displayed
-                self.collections().objects.unshift(obj);
+                // no sorting / order does not matter, so push it immediately to be displayed
+                self.collections.objects.unshift(obj);
             })
+        };
+
+        self.change_mine = function() {
+            self.collections.apply_filter({'owner': collection_owner().id()});
+        };
+
+        self.change_all_public = function() {
+            self.collections.apply_filter({'public': 'True'});
         };
     };
 
@@ -76,7 +74,8 @@ require.register("scripts/collections", function(exports, require, module) {
             return ko.toJS({
                 items: _.map(c.items(), function(item) { return item.id; }),
                 title: c.title,
-                description: c.description
+                description: c.description,
+                public: c.public
             });
         };
         var repo = new repository.Repository({
@@ -86,6 +85,9 @@ require.register("scripts/collections", function(exports, require, module) {
                            "&page=" + page;
                 if (filter.owner) {
                     url += "&owner=" + filter.owner;
+                }
+                if (filter.public) {
+                    url += "&public=" + filter.public
                 }
                 return url;
             },
@@ -102,6 +104,7 @@ require.register("scripts/collections", function(exports, require, module) {
                 collection.items = ko.observableArray(collection.items);
                 collection.title = ko.observable(collection.title);
                 collection.description = ko.observable(collection.description);
+                collection.public = ko.observable(collection.public);
                 collection._patch_json = _patch_json;
 
                 var put_update = function(payload) {

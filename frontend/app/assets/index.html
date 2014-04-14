@@ -143,6 +143,8 @@
                                        <!--data: collections().objects.infinitescroll}"></div>-->
             <ul class="collections-menu">
                 <li data-bind="click: create_new">New</li>
+                <li data-bind="click: change_mine">Mine</li>
+                <li data-bind="click: change_all_public">All</li>
             </ul>
 
             <div data-bind="if: collection_to_delete">
@@ -161,14 +163,19 @@
             </div>
 
             <ul class="collection-grid columns-3"
-                data-bind="scrollgrid: collections().objects">
+                data-bind="scrollgrid: collections.objects">
                 <li class="collection-card">
-                    <input class="collection-info" type="text" data-bind="textInput, value: title">
-                    <input class="collection-info" type="text" data-bind="textInput, value: description">
 
-                    <div data-bind="click: $parent.delete">Delete</div>
-
-
+                    <div data-bind="if: owned_by_me">
+                        <input class="collection-info" type="text" data-bind="textInput, value: title">
+                        <input class="collection-info" type="text" data-bind="textInput, value: description">
+                        <div><input type='checkbox' data-bind="checked: public">Public</div>
+                        <div data-bind="click: $parent.delete">Delete</div>
+                    </div>
+                    <div data-bind="ifnot: owned_by_me">
+                        <span class="collection-info" type="text" data-bind="text: title"></span>
+                        <span class="collection-info" type="text" data-bind="text: description"></span>
+                    </div>
 
                     <ul class="collection-items" data-bind="foreach: items">
                         <li class="collection-item">

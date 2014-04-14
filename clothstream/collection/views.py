@@ -1,9 +1,16 @@
+from django.db.models import Q
 from rest_framework import viewsets, mixins
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from clothstream.lib.permissions import IsOwnerOrReadOnly
 from .models import Collection
 from .serializers import CollectionSerializer, CollectionUpdateSerializer
 from rest_framework import permissions
+
+
+def bool_param(param):
+    if param not in ['True', 'False']:
+        return None
+    return True if param == 'True' else False
 
 
 class CollectionListRetrieve(ReadOnlyModelViewSet):
@@ -13,11 +20,19 @@ class CollectionListRetrieve(ReadOnlyModelViewSet):
     max_paginate_by = 100
     serializer_class = CollectionSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        return Collection.objects.filter(Q(public=False, owner__pk=user.pk) | Q(public=True))
+
     def filter_queryset(self, queryset):
         params = {k: self.request.QUERY_PARAMS.get(k) for k in self.request.QUERY_PARAMS}
         qs = queryset
         if 'owner' in params:
             qs = qs.filter(owner__id=params['owner'])
+        if 'public' in params:
+            params['public'] = bool_param(params['public'])
+            if params['public'] is not None:
+                qs = qs.filter(public=params['public'])
         return super().filter_queryset(qs)
 
 

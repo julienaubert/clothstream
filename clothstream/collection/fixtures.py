@@ -12,6 +12,7 @@ lorem = """Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eius
 dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
 consequat."""
 
+
 def collection_factory(initial_items=3, **kwargs):
     if 'owner' not in kwargs:
         if User.objects.count() == 0:

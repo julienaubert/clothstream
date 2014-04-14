@@ -3,6 +3,7 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 from clothstream.collection.fixtures import collection_factory
 from clothstream.collection.models import Collection
+from clothstream.collection.views import bool_param
 from clothstream.item.fixtures import item_factory
 from clothstream.tests.fixture_lib import user_factory
 from clothstream.tests.lib import from_db
@@ -21,13 +22,41 @@ class TestListCollection(WebTest):
         self.assertEqual(res.json['count'], 1)
 
     def test_can_filter_by_owner(self):
-        collection1 = collection_factory(initial_items=0, user=user_factory())
+        collection1 = collection_factory(initial_items=0, owner=user_factory())
         collection_factory(initial_items=0, owner=user_factory())
         assert Collection.objects.count() > 1
         res = self.app.get(self.url, params={'owner': collection1.owner.pk})
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json['count'], 1)
         self.assertEqual(collection1.id, res.json['results'][0]['id'])
+
+    def test_can_filter_by_public(self):
+        owner = user_factory()
+        collection1 = collection_factory(initial_items=0, owner=owner, public=False)
+        collection2 = collection_factory(initial_items=0, owner=owner, public=True)
+        res = self.app.get(self.url, user=owner, params={'owner': owner.pk, 'public': 'False'})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json['count'], 1)
+        self.assertEqual(collection1.id, res.json['results'][0]['id'])
+        res = self.app.get(self.url, params={'owner': owner.pk, 'public': 'True'})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json['count'], 1)
+        self.assertEqual(collection2.id, res.json['results'][0]['id'])
+
+    def test_private_collections_only_listed_for_owner(self):
+        collection1 = collection_factory(initial_items=0, public=False)
+        res = self.app.get(self.url)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json['count'], 0)
+        res = self.app.get(self.url, user=collection1.owner)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json['count'], 1)
+
+    def test_private_collections_only_listed_for_owner__also_if_use_filter(self):
+        collection1 = collection_factory(initial_items=0, owner=user_factory(), public=False)
+        res = self.app.get(self.url, params={'owner': collection1.owner.pk, 'public': 'False'})
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json['count'], 0)
 
 
 class TestDeleteCollection(WebTest):
@@ -56,14 +85,21 @@ class TestDeleteCollection(WebTest):
 class TestRetrieveCollection(WebTest):
     extra_environ = {'wsgi.url_scheme': 'https'}
 
-    def setUp(self):
-        self.collection = collection_factory(initial_items=0)
-        self.url = reverse('collection-detail', args=(self.collection.pk,))
-
     def test_anonymous_can_retrieve(self):
-        res = self.app.get(self.url)
+        collection = collection_factory(initial_items=0)
+        url = reverse('collection-detail', args=(collection.pk,))
+        res = self.app.get(url)
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(self.collection.title, res.json['title'])
+        self.assertEqual(collection.title, res.json['title'])
+
+    def test_private_collections_only_retrievable_by_owner(self):
+        collection = collection_factory(initial_items=0, public=False)
+        url = reverse('collection-detail', args=(collection.pk,))
+        res = self.app.get(url, expect_errors=True)
+        self.assertEqual(res.status_code, 404)
+        res = self.app.get(url, user=collection.owner)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(collection.title, res.json['title'])
 
 
 class TestCreateCollection(WebTest):
@@ -143,6 +179,13 @@ class TestUpdate(WebTest):
                              user=self.user)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(from_db(self.collection).description, new_description)
+
+    def test_patch_public(self):
+        new_public_status = not self.collection.public
+        res = self.app.patch(self.url, json.dumps({'public': 'True' if new_public_status else 'False'}),
+                             content_type='application/json', user=self.user)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(from_db(self.collection).public, new_public_status)
 
     def test_put_update(self):
         new_title = self.collection.title + u' ❤ ☀ ☆ ☂ ☻ ♞ '
