@@ -164,8 +164,7 @@
 
             <ul class="collection-grid columns-3"
                 data-bind="scrollgrid: collections.objects">
-                <li class="collection-card">
-
+                <li class="collection-card" data-bind="click: $root.go_to_collection ">
                     <div data-bind="if: owned_by_me">
                         <input class="collection-info" type="text" data-bind="textInput, value: title">
                         <input class="collection-info" type="text" data-bind="textInput, value: description">
@@ -173,17 +172,64 @@
                         <div data-bind="click: $parent.delete">Delete</div>
                     </div>
                     <div data-bind="ifnot: owned_by_me">
-                        <span class="collection-info" type="text" data-bind="text: title"></span>
-                        <span class="collection-info" type="text" data-bind="text: description"></span>
+                        <div class="collection-info" type="text" data-bind="text: title"></div>
+                        <div class="collection-info" type="text" data-bind="text: description"></div>
                     </div>
 
                     <ul class="collection-items" data-bind="foreach: items">
+                        <!-- ko if: $index() < 9 -->
                         <li class="collection-item">
                             <img data-bind="attr: { src: thumb_image_url }">
                         </li>
+                        <!-- /ko -->
                     </ul>
                 </li>
             </ul>
+        </script>
+<!--END APP -->
+
+
+<!--APP: collection.app -->
+        <script id="collection.html" type="text/html">
+
+
+            <div data-bind="if: collection_to_delete">
+                <div data-bind="confirmDialog: {title: 'Delete your collection?',
+                                                target: collection_to_delete,
+                                                cancel_text: 'Cancel',
+                                                confirm_text: 'Delete now',
+                                                confirm_click: confirm_delete
+                                                }
+                               ">
+                    <div data-bind="with: collection_to_delete">
+                        <p><strong data-bind="text: title"></strong></p>
+                        <p>This collection will disappear, any shared link to it will stop working. This cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collection-view" data-bind="with: collection">
+
+                <div data-bind="if: owned_by_me">
+                    <input class="collection-info" type="text" data-bind="textInput, value: title">
+                    <input class="collection-info" type="text" data-bind="textInput, value: description">
+                    <div><input type='checkbox' data-bind="checked: public">Public</div>
+                    <div data-bind="click: $parent.delete">Delete</div>
+                </div>
+                <div data-bind="ifnot: owned_by_me">
+                    <div class="collection-info" type="text" data-bind="text: title"></div>
+                    <div class="collection-info" type="text" data-bind="text: description"></div>
+                </div>
+
+                <ul class="collection-items" data-bind="foreach: items">
+                    <li class="collection-item">
+                        <img data-bind="attr: { src: thumb_image_url }">
+                        <div class="product-info">
+                            <h3><span data-bind="text: thumb_title"></span></h3>
+                        </div>
+                    </li>
+                </ul>
+            </div>
 
         </script>
 <!--END APP -->

@@ -37,6 +37,7 @@ require.register("scripts/collections", function(exports, require, module) {
             self.collections.load_until_entry(20);
         };
 
+        // TODO: duplicated code for deleting here and for deleting in CollectionView
         self.collection_to_delete = ko.observable(null);
 
         self.delete = function(collection) {

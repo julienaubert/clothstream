@@ -2,6 +2,7 @@ require.register("scripts/masterView", function(exports, require, module) {
 
     var pageLoader = require('scripts/pageLoader');
     var collections = require('scripts/collections');
+    var collection = require('scripts/collection');
     var discover = require('scripts/discover');
     var product = require('scripts/product');
 
@@ -18,17 +19,11 @@ require.register("scripts/masterView", function(exports, require, module) {
         self.collection_repo = collection_repo;
 
 
-        // VIEWS
-        self.views = {
-            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo),
-            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, user),
-            'collections': new collections.CollectionsView("collections.html", self.item_repo, self.collection_repo,
-                                                           user)
-        };
-        self.active_view = ko.observable();
+        // Routes
+        self.go_to_collection = function(collection) {
+            location.hash = "collections/" + collection.id;
+        }
 
-
-        // ROUTING
         self.go_to_product = function(product) {
             location.hash = getSlug(product.thumb_title) + "/" + product.id;
         }
@@ -41,12 +36,27 @@ require.register("scripts/masterView", function(exports, require, module) {
             location.hash = "collections/"
         }
 
+        // VIEWS
+        self.views = {
+            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo),
+            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, user),
+            'collections': new collections.CollectionsView("collections.html", self.item_repo, self.collection_repo,
+                                                           user),
+            'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections)
+        };
+        self.active_view = ko.observable();
+
+
+        // ROUTING
         self.route = function(view, data) {
             view.load(data);
             self.active_view(view);
         }
 
         Sammy(function() {
+            this.get('#collections/:collectionId', function() {
+                self.route(self.views.collection, { collection_id: this.params.collectionId});
+            });
             this.get('#:productThumb/:productId', function() {
                 self.route(self.views.chosen_product, { product_id: this.params.productId });
             });
