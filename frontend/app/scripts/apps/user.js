@@ -6,6 +6,11 @@ require.register("scripts/user", function(exports, require, module) {
         self.name = ko.observable(name);
         self.default_collection = ko.observable(default_collection);
         self.collections = ko.observable(collections);
+
+        self.is_logged_in = ko.computed(function() {
+            console.log('self.id()', self.id(), ' is !== undefined?', self.id() !== undefined);
+            return self.id() !== undefined;
+        })
     };
 
     var anonymous = new User();

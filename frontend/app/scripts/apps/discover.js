@@ -107,7 +107,8 @@ require.register("scripts/discover", function(exports, require, module) {
     DiscoverView = function(template_name, item_repo, user_collection_repo, user) {
         var self = this;
         self.template_name = template_name;
-        self.user_collection_repo = user_collection_repo;
+        self.user = user;
+
 
         self.item_repo = item_repo.create_filter();
         self.item_repo.objects.extend({ infinitescroll: {} });
@@ -125,12 +126,30 @@ require.register("scripts/discover", function(exports, require, module) {
             self.item_repo.load_until_entry(20);
         }
 
+
+
+        self.item_to_add = ko.observable(null);
+        self.selected_collection = ko.observable();
+
+        self.show_add_to_collection = ko.computed(function() {
+            return self.item_to_add() && user().is_logged_in();
+        });
+
+        self.show_must_login = ko.computed(function() {
+            return self.item_to_add() && !user().is_logged_in();
+        });
+
+        self.confirmed_must_login = function() {
+            self.item_to_add(null);
+        };
+
+        self.confirmed_add_item = function() {
+            self.selected_collection().items.push(self.item_to_add());
+            self.item_to_add(null);
+        };
+
         self.add_to_collection = function(item) {
-            if (user().default_collection()) {
-                user().default_collection().items.push(item);
-            } else {
-                // tell must login to to add
-            }
+            self.item_to_add(item);
         };
     };
 

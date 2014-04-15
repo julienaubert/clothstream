@@ -14,6 +14,7 @@ class ItemViewSet(viewsets.ModelViewSet):
     max_paginate_by = 100
 
     def filter_queryset(self, queryset):
+        # TODO: do it http://www.django-rest-framework.org/api-guide/filtering
         params = {k: self.request.QUERY_PARAMS.get(k) for k in self.request.QUERY_PARAMS}
         qs = queryset
         if 'min_price' in params:

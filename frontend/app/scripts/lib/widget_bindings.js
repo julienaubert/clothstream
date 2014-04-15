@@ -24,10 +24,35 @@ ko.bindingHandlers.textInput = {
 };
 
 
+
 ko.bindingHandlers.confirmDialog = {
+    // cancel and OK button, cancel button only if cancel_text is provided
+    // target: typically an observable, writes null to it if cancel, if confirm, then calls confirm_click and passes it
+    // confirm_click: function, which is passed target and event (in that order) if user clicks the confirm button
     init: function(element, valueAccessor, allBindings, deprecated, bindingContext) {
+
         ko.applyBindingAccessorsToNode(element, {
             dialog: function() {
+                var buttons = [];
+                var target = valueAccessor()['target'] || function() {};
+                if (valueAccessor()['cancel_text']) {
+                    buttons.push(
+                        {
+                            text: valueAccessor()['cancel_text'],
+                            click: function(event) {
+                                target(null);
+                            }
+                        }
+                    );
+                }
+                buttons.push(
+                    {
+                        text: valueAccessor()['confirm_text'],
+                        click: function(event) {
+                            valueAccessor()['confirm_click'](target, event);
+                        }
+                    }
+                );
                 return {
                     autoOpen: true,
                     draggable: false,
@@ -35,18 +60,7 @@ ko.bindingHandlers.confirmDialog = {
                     dialogClass: 'no-close',
                     closeOnEscape: true,
                     title: valueAccessor()['title'],
-                    buttons: [{
-                            text: valueAccessor()['cancel_text'],
-                            click: function(event) {
-                                valueAccessor()['target'](null);
-                            }
-                        }, {
-                            text: valueAccessor()['confirm_text'],
-                            click: function(event) {
-                                valueAccessor()['confirm_click'](valueAccessor()['target'], event);
-                            }
-                        }
-                    ]
+                    buttons: buttons
                 };
             }
         }, bindingContext);

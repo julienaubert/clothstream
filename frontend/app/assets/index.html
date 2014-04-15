@@ -103,33 +103,65 @@
 
             <div data-bind="template: 'filter_view.html'"></div>
 
+
+            <div data-bind="if: show_add_to_collection">
+                <div data-bind="confirmDialog: {title: 'Add to collection',
+                                                target: item_to_add,
+                                                cancel_text: 'Cancel',
+                                                confirm_text: 'Yes',
+                                                confirm_click: confirmed_add_item
+                                                }
+                               ">
+                    <div data-bind="with: item_to_add">
+                        <p>
+                            Add <strong data-bind="text: thumb_title"></strong> to
+                            <select data-bind="options: $parent.user().collections().objects,
+                                               optionsText: 'title',
+                                               optionsCaption: 'Choose...',
+                                               value: $parent.selected_collection"></select>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div data-bind="if: show_must_login">
+                <div data-bind="confirmDialog: {title: 'Login',
+                                                confirm_text: 'OK',
+                                                confirm_click: confirmed_must_login
+                                                }
+                               ">
+                    <p>Login to make your own collections.</p>
+                </div>
+            </div>
+
             <ul class="product-grid columns-3"
                 data-bind="scrollgrid: item_repo.objects">
                 <li class="product-card" data-bind="attr: { id: 'product-card-id-' + $index() },
                                                     click: $root.go_to_product ">
                     <!-- ko if: $index() < $parent.item_repo.objects.infinitescroll.lastHiddenIndex() -->
-                    <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
-                        <div class="product-thumb">
-                                <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
-                        </div>
-                        <a data-bind="attr: {href: link},
-                                      domClick,
-                                      hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
-                            <span class="product-overlay-button product-buy">Buy</span>
-                        </a>
-                        <a data-bind="attr: {href: link},
-                                      click: $parent.add_to_collection,
-                                      clickBubble: false,
-                                      hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
-                            <span class="product-overlay-button product-save">Add</span>
-                        </a>
+                        <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
+                            <div class="product-thumb">
+                                    <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
+                            </div>
+                            <a data-bind="attr: {href: link},
+                                          domClick,
+                                          hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
+                                <span class="product-overlay-button product-buy">Buy</span>
+                            </a>
 
-                        <div class="product-overlay-detail">
-                        </div>
-                        <div class="product-info">
-                            <h3><span data-bind="text: thumb_title"></span></h3>
-                        </div>
-                    <!--</a>-->
+                            <a data-bind="attr: {href: link},
+                                          click: $parent.add_to_collection,
+                                          clickBubble: false,
+                                          hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
+                                <span class="product-overlay-button product-save">Add</span>
+                            </a>
+
+                            <div class="product-overlay-detail">
+                            </div>
+                            <div class="product-info">
+                                <h3><span data-bind="text: thumb_title"></span></h3>
+                            </div>
+                        <!--</a>-->
                     <!-- /ko -->
                 </li>
             </ul>

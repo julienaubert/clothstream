@@ -40,8 +40,7 @@ require.register("scripts/masterView", function(exports, require, module) {
         self.views = {
             'chosen_product': new product.ProductView("chosen_product.html", self.item_repo),
             'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, user),
-            'collections': new collections.CollectionsView("collections.html", self.item_repo, self.collection_repo,
-                                                           user),
+            'collections': new collections.CollectionsView("collections.html", self.collection_repo, user),
             'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections)
         };
         self.active_view = ko.observable();

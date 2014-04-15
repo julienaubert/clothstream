@@ -19,7 +19,7 @@ require.register("scripts/collections", function(exports, require, module) {
         });
     };
 
-    var CollectionsView = function(template_name, item_repo, collection_repo, collection_owner) {
+    var CollectionsView = function(template_name, collection_repo, collection_owner) {
         var self = this;
         self.template_name = template_name;
 
