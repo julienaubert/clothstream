@@ -1,7 +1,7 @@
 from itertools import count
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from clothstream.collection.signals import create_initial_collection
+from clothstream.user_profile.models import UserProfile
 
 
 def subargs(kwargs, prefix):
@@ -22,9 +22,9 @@ def user_factory(skip_initial_collection=True, **kwargs):
         kwargs['username'] = nextname('User')
 
     if skip_initial_collection:
-        post_save.disconnect(create_initial_collection, sender=User)
-    user = User.objects.create(**kwargs)
+        post_save.disconnect(create_initial_collection, sender=UserProfile)
+    user = UserProfile.objects.create(**kwargs)
     if skip_initial_collection:
-        post_save.connect(create_initial_collection, sender=User)
+        post_save.connect(create_initial_collection, sender=UserProfile)
 
     return user

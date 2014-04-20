@@ -42,3 +42,4 @@ TEMPLATE_DEBUG = True
 MEDIA_ROOT = str(TMP_BUILDDIR/'media')
 STATIC_ROOT = str(TMP_BUILDDIR/'static')
 
+DATABASES['default']['NAME'] = DATABASES['default']['NAME'].replace('test', 'local')

@@ -24,24 +24,49 @@
         <div id="fb-root"></div>
 
         <div class="fb-like" data-send="true" data-width="450" data-show-faces="true"></div>
-        <ul class="menu">
-            <li class="menu-item" data-bind="click: $root.go_to_discover">Discover</li>
-            <li class="menu-item" data-bind="click: $root.go_to_collections">Collections</li>
-            <li class="menu-item">
-                <div class="fb-login-button"
-                     data-max-rows="1"
-                     data-size="large"
-                     data-show-faces="false"
-                     data-auto-logout-link="false"
-                     data-bind="visible: auth.show_login">
-                </div>
-                <div class="logout-button"
-                     data-bind="visible: auth.show_logout,
-                                click: auth.logout">
-                     <span data-bind="text: user().name"></span>
-                </div>
-            </li>
-        </ul>
+        <nav class="float_container">
+            <ul class="menu float_contained">
+                <li class="menu-item" data-bind="click: $root.go_to_discover">Discover</li>
+                <li class="menu-item" data-bind="click: $root.go_to_collections">Collections</li>
+
+                <li class="menu-item">
+                    <!--
+                    Note: must use auth.show_logout in if-binding instead of auth.user as it may take some time
+                    from that the user clicked log-in until auth.user is received
+                    -->
+                    <!-- ko if: auth.show_logout -->
+                        <div class="logout-button"
+                             data-bind="click: auth.logout">
+                             <span>Sign out</span>
+                        </div>
+                    <!-- /ko -->
+
+                    <!--
+                    Note: we must always have fb-login-button in the DOM, i.e. cannot use knockout if-binding
+                    Reason: facebook sdk probably finds this div once and re-uses it.
+                    -->
+                    <div class="fb-login-button"
+                         data-max-rows="1"
+                         data-size="large"
+                         data-show-faces="false"
+                         data-auto-logout-link="false"
+                         data-bind="visible: auth.show_login">
+                    </div>
+                </li>
+
+                <!-- ko if: auth.user -->
+                <li class="menu-item">
+                    <div class="logout-button"
+                        data-bind="click: $root.go_to_profile,
+                                   with: auth.user()">
+                        <img class="profile-avatar" data-bind="attr: { src: avatar }">
+                        <span data-bind="text: name"></span>
+                    </div>
+                </li>
+                <!-- /ko -->
+
+            </ul>
+        </nav>
 
         <!-- ko with: active_view -->
             <!-- ko template: template_name -->
@@ -65,6 +90,32 @@
             </div>
         </script>
 <!--END APP -->
+
+
+
+<!--APP: profile.app -->
+        <script id="profile.html" type="text/html">
+             <!--ko if: user -->
+                <section class="profile" data-bind="with: user">
+                    <h1 data-bind="text: name"></h1>
+                    <img class="profile-picture" data-bind="attr: { src: picture }">
+                    <input class="profile-about-me" type="text" data-bind="textInput, value: about_me">
+
+                    <nav class="float_container">
+                        <ul class="menu float_contained">
+                            <li class="menu-item" data-bind="click: $parent.go_to_collections">Collections</li>
+                            <li class="menu-item" data-bind="click: $parent.go_to_favorites">Favorites</li>
+                        </ul>
+                    </nav>
+                    <ul class="collection-grid columns-3" data-bind="scrollgrid: {items: collections.objects, on_scroll: $parent.load_more_collections}">
+                        <!-- ko template: {name: 'collection_card.html'} -->
+                        <!-- /ko -->
+                    </ul>
+                </section>
+            <!-- /ko -->
+        </script>
+<!--END APP -->
+
 
 
 <!--APP: discover.app -->
@@ -115,7 +166,7 @@
                     <div data-bind="with: item_to_add">
                         <p>
                             Add <strong data-bind="text: thumb_title"></strong> to
-                            <select data-bind="options: $parent.user().collections().objects,
+                            <select data-bind="options: $parent.user().collections.objects,
                                                optionsText: 'title',
                                                optionsCaption: 'Choose...',
                                                value: $parent.selected_collection"></select>
@@ -135,7 +186,7 @@
             </div>
 
             <ul class="product-grid columns-3"
-                data-bind="scrollgrid: item_repo.objects">
+                data-bind="scrollgrid: {items: item_repo.objects, on_scroll: load_more}">
                 <li class="product-card" data-bind="attr: { id: 'product-card-id-' + $index() },
                                                     click: $root.go_to_product ">
                     <!-- ko if: $index() < $parent.item_repo.objects.infinitescroll.lastHiddenIndex() -->
@@ -169,15 +220,43 @@
 <!--END APP -->
 
 
+<!-- SHARED VIEW: collection_card -->
+        <script id="collection_card.html" type="text/html">
+            <li class="collection-card" data-bind="click: $root.go_to_collection ">
+                <div data-bind="if: owned_by_me">
+                    <input class="collection-info" type="text" data-bind="textInput, value: title">
+                    <input class="collection-info" type="text" data-bind="textInput, value: description">
+                    <div><input type='checkbox' data-bind="checked: public">Public</div>
+                    <div data-bind="click: $parent.delete">Delete</div>
+                </div>
+                <div data-bind="ifnot: owned_by_me">
+                    <div class="collection-info" type="text" data-bind="text: title"></div>
+                    <div class="collection-info" type="text" data-bind="text: description"></div>
+                </div>
+
+                <ul class="collection-items" data-bind="foreach: items">
+                    <!-- ko if: $index() < 9 -->
+                    <li class="collection-item">
+                        <img data-bind="attr: { src: thumb_image_url }">
+                    </li>
+                    <!-- /ko -->
+                </ul>
+            </li>
+        </script>
+<!--END collection -->
+
+
 <!--APP: collections.app -->
         <script id="collections.html" type="text/html">
             <!--<div data-bind="template: {name: 'scrollgrid_debug.html',-->
                                        <!--data: collections().objects.infinitescroll}"></div>-->
-            <ul class="collections-menu">
-                <li data-bind="click: create_new">New</li>
-                <li data-bind="click: change_mine">Mine</li>
-                <li data-bind="click: change_all_public">All</li>
-            </ul>
+            <nav>
+                <ul class="collections-menu">
+                    <li data-bind="click: create_new">New</li>
+                    <li data-bind="click: change_mine">Mine</li>
+                    <li data-bind="click: change_all_public">All</li>
+                </ul>
+            </nav>
 
             <div data-bind="if: collection_to_delete">
                 <div data-bind="confirmDialog: {title: 'Delete your collection?',
@@ -194,28 +273,9 @@
                 </div>
             </div>
 
-            <ul class="collection-grid columns-3"
-                data-bind="scrollgrid: collections.objects">
-                <li class="collection-card" data-bind="click: $root.go_to_collection ">
-                    <div data-bind="if: owned_by_me">
-                        <input class="collection-info" type="text" data-bind="textInput, value: title">
-                        <input class="collection-info" type="text" data-bind="textInput, value: description">
-                        <div><input type='checkbox' data-bind="checked: public">Public</div>
-                        <div data-bind="click: $parent.delete">Delete</div>
-                    </div>
-                    <div data-bind="ifnot: owned_by_me">
-                        <div class="collection-info" type="text" data-bind="text: title"></div>
-                        <div class="collection-info" type="text" data-bind="text: description"></div>
-                    </div>
-
-                    <ul class="collection-items" data-bind="foreach: items">
-                        <!-- ko if: $index() < 9 -->
-                        <li class="collection-item">
-                            <img data-bind="attr: { src: thumb_image_url }">
-                        </li>
-                        <!-- /ko -->
-                    </ul>
-                </li>
+            <ul class="collection-grid columns-3" data-bind="scrollgrid: {items: collections.objects, on_scroll: load_more}">
+                <!-- ko template: {name: 'collection_card.html'} -->
+                <!-- /ko -->
             </ul>
         </script>
 <!--END APP -->

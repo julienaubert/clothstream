@@ -79,6 +79,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social.apps.django_app.context_processors.login_redirect',
 )
 
+AUTH_USER_MODEL = 'user_profile.UserProfile'
+SOCIAL_AUTH_USER_MODEL = 'user_profile.UserProfile'
 SOCIAL_AUTH_FACEBOOK_KEY = 'your app id here'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'your app secret here'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -98,13 +100,15 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     # 'raven.contrib.django.raven_compat',
-    'south',
+    # 'south',
     'djangosecure',
     'clothstream',
     'rest_framework',
     'clothstream.item',
     'clothstream.collection',
-    'clothstream.auth',
+    'clothstream.rest_auth',
+    'clothstream.user_profile',
+    'clothstream.social_fb',
     'social.apps.django_app.default',
 )
 

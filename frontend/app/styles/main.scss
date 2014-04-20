@@ -22,11 +22,21 @@ $legacy-support-for-mozilla: false;
 @import "apps/collections";
 @import "apps/discover";
 @import "apps/product";
+@import "apps/profile";
 
 
 .body {
   font-family:helvetica,arial,sans-serif;
   font-size:10px;
+}
+
+
+.float_container {
+  overflow: hidden;
+}
+
+.float_contained {
+  float: left;
 }
 
 
@@ -39,7 +49,6 @@ $legacy-support-for-mozilla: false;
 .menu-item {
     cursor: pointer;
 }
-
 
 /* infinite scroll, scrollbar is rendered on the menu
  */

@@ -4,8 +4,11 @@ from rest_framework.routers import SimpleRouter, DefaultRouter
 
 class HyperlinkedFileField(serializers.FileField):
     def to_native(self, value):
-        request = self.context.get('request')
-        return request.build_absolute_uri(value.url)
+        if value:
+            request = self.context.get('request')
+            return request.build_absolute_uri(value.url)
+        else:
+            return ''
 
 
 class ConsoleDebug():

@@ -1,12 +1,10 @@
 .collections-menu {
-    clear:both;
     float:left;
     list-style-type: none;
     cursor: pointer;
 }
 
 .collection-grid {
-    clear:both;
     overflow: auto;
     min-height: 500px;
     height: 100%;
@@ -33,6 +31,7 @@
     width: 100%;
     margin: 0;
     min-height: 40px;
+
     padding: 0;
     border: 0;
     font-size: 0.8em;

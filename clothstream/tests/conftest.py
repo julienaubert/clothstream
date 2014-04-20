@@ -4,10 +4,10 @@ from pathlib import Path
 # py.test messes up sys.path, must add manually
 # (note: do not have __init__.py in project if project and app has same name, python takes "top package" and will
 # import from project instead of from app)
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from django.conf import settings
 from six import text_type
-
 
 
 def pytest_configure(config):
@@ -42,3 +42,16 @@ def pytest_configure(config):
     settings.PASSWORD_HASHERS = [
         'django.contrib.auth.hashers.MD5PasswordHasher',
     ]
+
+    # we monkey-patch connection.creation, to be sure that we modify sequences after it has completely finished
+    # (if we use post-syncdb signal, it won't work as some post-signals will actually call reset-sequences)
+    from django.db import connections
+    for connection in connections.all():
+        from pytest_django.db_reuse import _monkeypatch
+        from clothstream.lib.modify_seq import setup_modified_seq
+        create_test_db = connection.creation.create_test_db
+
+        def create_test_db_with_modified_sequences(self, *args, **kwargs):
+            create_test_db(*args, **kwargs)
+            setup_modified_seq(connection)
+        _monkeypatch(connection.creation, 'create_test_db', create_test_db_with_modified_sequences)

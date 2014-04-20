@@ -1,46 +1,46 @@
 require.register("scripts/masterView", function(exports, require, module) {
-
     var pageLoader = require('scripts/pageLoader');
     var collections = require('scripts/collections');
     var collection = require('scripts/collection');
     var discover = require('scripts/discover');
     var product = require('scripts/product');
 
-    exports.MasterViewModel = function(auth /* auth.Facebook, see auth.js */,
-                                       item_repo /* ItemRepository */,
-                                       collection_repo /* CollectionRepository */,
-                                       user) {
+    exports.MasterViewModel = function(auth, item_repo, collection_repo, user_repo) {
         var self = this;
 
         // SHARED COMPONENTS
         self.item_repo = item_repo;
         self.auth = auth;
-        self.user = user;
         self.collection_repo = collection_repo;
 
-
         // Routes
+        self.go_to_profile = function() {
+            console.log('go to profile: %o', {user_id: auth.user().id});
+            location.hash = self.views.profile.location({user_id: auth.user().id});
+        };
+
         self.go_to_collection = function(collection) {
-            location.hash = "collections/" + collection.id;
-        }
+            location.hash = "collections/" + collection.id + "/";
+        };
 
         self.go_to_product = function(product) {
-            location.hash = getSlug(product.thumb_title) + "/" + product.id;
-        }
+            location.hash = getSlug(product.thumb_title) + "/" + product.id + "/";
+        };
 
         self.go_to_discover = function() {
-            location.hash = "discover/"
-        }
+            location.hash = "discover/";
+        };
 
         self.go_to_collections = function() {
-            location.hash = "collections/"
-        }
+            location.hash = "collections/";
+        };
 
         // VIEWS
         self.views = {
+            'profile': new profile.UserProfileView("profile.html", user_repo),
             'chosen_product': new product.ProductView("chosen_product.html", self.item_repo),
-            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, user),
-            'collections': new collections.CollectionsView("collections.html", self.collection_repo, user),
+            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user),
+            'collections': new collections.CollectionsView("collections.html", self.collection_repo, auth.user),
             'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections)
         };
         self.active_view = ko.observable();
@@ -50,22 +50,28 @@ require.register("scripts/masterView", function(exports, require, module) {
         self.route = function(view, data) {
             view.load(data);
             self.active_view(view);
-        }
+        };
 
         Sammy(function() {
-            this.get('#collections/:collectionId', function() {
-                self.route(self.views.collection, { collection_id: this.params.collectionId});
+            var sammy = this;
+            self.views.profile.route(function(url, view_args) {
+                sammy.get(url, function() { self.route(self.views.profile, view_args(this.params)); });
             });
-            this.get('#:productThumb/:productId', function() {
-                self.route(self.views.chosen_product, { product_id: this.params.productId });
+            sammy.get('#collections/:collection_id/$', function() {
+                self.route(self.views.collection, {collection_id: this.params.collection_id});
             });
-            this.get('#collections/', function() { self.route(self.views.collections) });
-            this.get('#discover/', function() { self.route(self.views.discover) });
-            this.get('', function() { self.route(self.views.discover) });
+            sammy.get('#:productThumb/:product_id/$', function() {
+                self.route(self.views.chosen_product, {product_id: this.params.product_id});
+            });
+            sammy.get('#collections/$', function() {self.route(self.views.collections)});
+            sammy.get('#discover/$', function() {self.route(self.views.discover)});
+            sammy.get('', function() {
+                location.hash = '#discover/';
+            });
         }).run();
-
-
     };
+
+    var profile = require('scripts/profile');
 
     /*** sketch on how to make masterView a general app-router:
 

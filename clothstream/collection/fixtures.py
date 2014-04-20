@@ -1,7 +1,7 @@
 """ Used to generate sampledata / test-data
 """
-from django.contrib.auth.models import User
 from clothstream.item.fixtures import item_factory
+from clothstream.user_profile.models import UserProfile
 from clothstream.tests.fixture_lib import subargs, nextname, user_factory
 
 from .models import Item, Collection
@@ -15,10 +15,10 @@ consequat."""
 
 def collection_factory(initial_items=3, **kwargs):
     if 'owner' not in kwargs:
-        if User.objects.count() == 0:
+        if UserProfile.objects.count() == 0:
             kwargs['owner'] = user_factory()
         else:
-            kwargs['owner'] = User.objects.order_by('?')[0]
+            kwargs['owner'] = UserProfile.objects.order_by('?')[0]
     if 'title' not in kwargs:
         kwargs['title'] = nextname('Collection')
     if 'description' not in kwargs:

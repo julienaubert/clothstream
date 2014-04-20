@@ -1,0 +1,5 @@
+
+
+Multi-column:
+- use: overflow: auto; on parent, and float:left on children
+    http://stackoverflow.com/questions/11805352/floatleft-vs-displayinline-vs-displayinline-block-vs-displaytable-cell

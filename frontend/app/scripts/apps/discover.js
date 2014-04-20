@@ -108,35 +108,33 @@ require.register("scripts/discover", function(exports, require, module) {
         var self = this;
         self.template_name = template_name;
         self.user = user;
-
-
         self.item_repo = item_repo.create_filter();
-        self.item_repo.objects.extend({ infinitescroll: {} });
-        self.item_repo.objects.infinitescroll.lastVisibleIndex.subscribe(function (last_visible_index) {
-            if (last_visible_index == -1) {
-                return;
-            }
-            var scroller = self.item_repo.objects.infinitescroll;
-            self.item_repo.load_until_entry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding())
-        });
+
+        self.load_more = function(last_item_index) {
+            self.item_repo.load_until_entry(last_item_index);
+        };
 
         self.filter_view = new ItemsFilter(self.item_repo.apply_filter);
 
         self.load = function(params) {
             self.item_repo.load_until_entry(20);
-        }
+        };
 
-
+        var load_user_collection = ko.computed(function() {
+            if (user()) {
+                user().collections.load_until_entry(20);
+            }
+        });
 
         self.item_to_add = ko.observable(null);
         self.selected_collection = ko.observable();
 
         self.show_add_to_collection = ko.computed(function() {
-            return self.item_to_add() && user().is_logged_in();
+            return self.item_to_add() && user();
         });
 
         self.show_must_login = ko.computed(function() {
-            return self.item_to_add() && !user().is_logged_in();
+            return self.item_to_add() && !user();
         });
 
         self.confirmed_must_login = function() {

@@ -3,35 +3,15 @@ require.register("scripts/collections", function(exports, require, module) {
     var req = require('scripts/req');
     var auth = require('scripts/auth');
 
-
-    var put = function(target, payload, callback) {
-        $.csrfAjax({
-            type: 'PUT',
-            url: target,
-            async: true,
-            contentType: "application/json; charset=utf-8",
-            data: payload,
-            success: function(data) {
-                if (callback) {
-                    callback(data);
-                }
-            }
-        });
-    };
-
     var CollectionsView = function(template_name, collection_repo, collection_owner) {
         var self = this;
         self.template_name = template_name;
 
         self.collections = collection_repo.create_filter();
-        self.collections.objects.extend({ infinitescroll: {} });
-        self.collections.objects.infinitescroll.lastVisibleIndex.subscribe(function (last_visible_index) {
-            if (last_visible_index == -1) {
-                return;
-            }
-            var scroller = self.collections.objects.infinitescroll;
-            self.collections.load_until_entry(scroller.lastVisibleIndex() + 1 + scroller.numItemsPadding())
-        });
+
+        self.load_more = function(last_item_index) {
+            self.collections.load_until_entry(last_item_index);
+        };
 
         self.load = function(params) {
             self.collections.load_until_entry(20);
@@ -57,11 +37,13 @@ require.register("scripts/collections", function(exports, require, module) {
             collection_repo.create(data, function(obj) {
                 // no sorting / order does not matter, so push it immediately to be displayed
                 self.collections.objects.unshift(obj);
+                // only owner can create so, we know it must be in here too:
+                collection_owner().collections.objects.unshift(obj);
             })
         };
 
         self.change_mine = function() {
-            self.collections.apply_filter({'owner': collection_owner().id()});
+            self.collections.apply_filter({'owner': collection_owner().id});
         };
 
         self.change_all_public = function() {
@@ -71,12 +53,12 @@ require.register("scripts/collections", function(exports, require, module) {
 
     var construct_collection_repo = function() {
         var _patch_json = function() {
-            var c = this;
+            var collection = this;
             return ko.toJS({
-                items: _.map(c.items(), function(item) { return item.id; }),
-                title: c.title,
-                description: c.description,
-                public: c.public
+                items: _.map(collection.items(), function(item) { return item.id; }),
+                title: collection.title,
+                description: collection.description,
+                public: collection.public
             });
         };
         var repo = new repository.Repository({

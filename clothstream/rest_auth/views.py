@@ -4,7 +4,8 @@ from rest_framework import permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from social.apps.django_app.utils import strategy, load_strategy
-from clothstream.auth.serializers import UserLoginSerializer
+from clothstream.social_fb.api import enrich_via_facebook
+from clothstream.user_profile.serializers import UserSerializer
 
 
 @csrf_exempt
@@ -20,9 +21,10 @@ def register_by_access_token(request, backend):
     except Exception as err:
         return Response(str(err), status=400)
     if user:
+        enrich_via_facebook(user)
         strategy = load_strategy(request=request, backend=backend)
         login(strategy.request, user)
-        serializer = UserLoginSerializer(instance=user, context={'request': request})
+        serializer = UserSerializer(instance=user, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     else:
         return Response("Bad Credentials", status=403)

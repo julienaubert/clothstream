@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Item
-from ..lib import rest
+from clothstream.lib import rest
 
 
 class ItemSerializer(serializers.HyperlinkedModelSerializer):

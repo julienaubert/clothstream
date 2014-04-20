@@ -3,7 +3,6 @@ from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 from clothstream.collection.fixtures import collection_factory
 from clothstream.collection.models import Collection
-from clothstream.collection.views import bool_param
 from clothstream.item.fixtures import item_factory
 from clothstream.tests.fixture_lib import user_factory
 from clothstream.tests.lib import from_db
@@ -16,7 +15,7 @@ class TestListCollection(WebTest):
         self.url = reverse('collection-list')
 
     def test_anonymous_can_list(self):
-        collection1 = collection_factory(initial_items=0)
+        collection_factory(initial_items=0)
         res = self.app.get(self.url)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json['count'], 1)

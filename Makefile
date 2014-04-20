@@ -59,8 +59,14 @@ endif
 
 
 newdev:
-	psql -d postgres -c 'DROP DATABASE IF EXISTS clothstream;'
-	psql -d postgres -c 'CREATE DATABASE clothstream;'
+	# kill any existing sessions to db 
+	psql -d postgres -c '\
+		SELECT pg_terminate_backend(pg_stat_activity.pid) \
+		FROM pg_stat_activity \
+		WHERE pg_stat_activity.datname = '"'"'clothstream_local'"'"' \
+		AND pid <> pg_backend_pid();' 
+	psql -d postgres -c 'DROP DATABASE IF EXISTS clothstream_local;'
+	psql -d postgres -c 'CREATE DATABASE clothstream_local;'
 	rm -f clothstream.sqlite
 	./manage.py syncdb --noinput
 	./manage.py sampledata

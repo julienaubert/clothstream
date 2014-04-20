@@ -1,12 +1,8 @@
 import json
 from django.conf import settings
 from django.contrib.auth import user_logged_in
-from django_webtest import WebTest
 from django.core.urlresolvers import reverse
-from clothstream.collection.fixtures import collection_factory
-from clothstream.collection.models import Collection
-from clothstream.item.fixtures import item_factory
-from clothstream.tests.fixture_lib import user_factory
+from django_webtest import WebTest
 from .facebook_api import FacebookGraphAPI, FacebookTestUsers
 
 
@@ -36,12 +32,14 @@ ensure_has_test_users()
 
 class WhoLoggedInMixin():
     user_whom_logged_in = None
+
     def on_login(sender, request, user, **kwargs):
         WhoLoggedInMixin.user_whom_logged_in = user
     user_logged_in.connect(on_login)
 
 
 class TestFacebookLogin(WhoLoggedInMixin, WebTest):
+    extra_environ = {'wsgi.url_scheme': 'https'}
     csrf_checks = False
 
     def test_login_301_if_not_https(self):
@@ -52,31 +50,21 @@ class TestFacebookLogin(WhoLoggedInMixin, WebTest):
 
     def test_ok(self):
         url = reverse('api.login', args=('facebook',))
-        res = self.app.post(url,
-                            json.dumps({'access_token': FB_TEST_USERS[0]}),
-                            content_type='application/json',
-                            extra_environ={'wsgi.url_scheme': 'https'})
+        res = self.app.post(url, json.dumps({'access_token': FB_TEST_USERS[0]}), content_type='application/json')
         self.assertTrue(self.user_whom_logged_in.is_authenticated())
-        self.assertEqual(res.json['id'], self.user_whom_logged_in.id)
-        self.assertEqual(res.json['name'], self.user_whom_logged_in.get_full_name())
-        self.assertEqual(res.json['default_collection']['id'], self.user_whom_logged_in.get_default_collection().pk)
 
-    def test_ok_when_collection_has_items(self):
+    def test_profile_returned_when_logged_in(self):
+        # important as front-end assumes can use json response from login, instead of fetching from server
         url = reverse('api.login', args=('facebook',))
         res = self.app.post(url,
                             json.dumps({'access_token': FB_TEST_USERS[0]}),
                             content_type='application/json',
                             extra_environ={'wsgi.url_scheme': 'https'})
-        self.user_whom_logged_in.get_default_collection().items.add(item_factory())
-        res = self.app.post(url,
-                            json.dumps({'access_token': FB_TEST_USERS[0]}),
-                            content_type='application/json',
-                            extra_environ={'wsgi.url_scheme': 'https'})
-        self.assertEqual(len(res.json['default_collection']['items']), 1)
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(self.user_whom_logged_in.id, res.json['id'])
+        res_retrieve = self.app.get(reverse('userprofile-detail', args=(res.json['id'],)))
+        self.assertEqual(res.json, res_retrieve.json)
 
     def test_400_if_no_access_token(self):
         url = reverse('api.login', args=('facebook',))
-        res = self.app.post(url, json.dumps({'access_token': ''}), content_type='application/json',
-                            expect_errors=True, extra_environ={'wsgi.url_scheme': 'https'})
+        res = self.app.post(url, json.dumps({'access_token': ''}), content_type='application/json', expect_errors=True)
         self.assertEqual(res.status_code, 400)
