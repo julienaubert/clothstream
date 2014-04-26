@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from uuidfield import UUIDField
 from django.utils.translation import ugettext_lazy as _
+from clothstream.item.models import Item
 
 
 class UserProfile(AbstractUser):
@@ -13,6 +14,8 @@ class UserProfile(AbstractUser):
                                 blank=True,
                                upload_to=lambda *args, **kwargs: '')
     about_me = models.TextField(_('About me'), help_text=_('User presentation'))
+    favorite_items = models.ManyToManyField(Item, through='favorites.FavoritedItem', related_name='favorited_by')
+
 
 # max_length should be overridden to 254 characters to be fully
 # compliant with RFCs 3696 and 5321

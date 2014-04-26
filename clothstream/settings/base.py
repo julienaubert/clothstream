@@ -104,6 +104,7 @@ INSTALLED_APPS = (
     'djangosecure',
     'clothstream',
     'rest_framework',
+    'clothstream.favorites',
     'clothstream.item',
     'clothstream.collection',
     'clothstream.rest_auth',

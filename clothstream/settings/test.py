@@ -53,6 +53,10 @@ def random_start_sequence(db):
 
 random_start_sequence(db)
 
+MEDIA_ROOT = str(TMP_BUILDDIR/'test'/'media')
+mkdir_p(MEDIA_ROOT)
+STATIC_ROOT = str(TMP_BUILDDIR/'test'/'static')
+mkdir_p(STATIC_ROOT)
 
 DATABASES = {'default': SUPPORTED_DATABASES[db]}
 

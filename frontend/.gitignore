@@ -4,6 +4,7 @@ coverage/*
 bower_components/*
 public/*
 build
+Gemfile.lock
 
 lib-cov
 *.seed

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import user_logged_in
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
+from clothstream.tests.lib import WhoLoggedInMixin
 from .facebook_api import FacebookGraphAPI, FacebookTestUsers
 
 
@@ -30,14 +31,6 @@ def ensure_has_test_users():
 ensure_has_test_users()
 
 
-class WhoLoggedInMixin():
-    user_whom_logged_in = None
-
-    def on_login(sender, request, user, **kwargs):
-        WhoLoggedInMixin.user_whom_logged_in = user
-    user_logged_in.connect(on_login)
-
-
 class TestFacebookLogin(WhoLoggedInMixin, WebTest):
     extra_environ = {'wsgi.url_scheme': 'https'}
     csrf_checks = False
@@ -51,18 +44,7 @@ class TestFacebookLogin(WhoLoggedInMixin, WebTest):
     def test_ok(self):
         url = reverse('api.login', args=('facebook',))
         res = self.app.post(url, json.dumps({'access_token': FB_TEST_USERS[0]}), content_type='application/json')
-        self.assertTrue(self.user_whom_logged_in.is_authenticated())
-
-    def test_profile_returned_when_logged_in(self):
-        # important as front-end assumes can use json response from login, instead of fetching from server
-        url = reverse('api.login', args=('facebook',))
-        res = self.app.post(url,
-                            json.dumps({'access_token': FB_TEST_USERS[0]}),
-                            content_type='application/json',
-                            extra_environ={'wsgi.url_scheme': 'https'})
-        self.assertEqual(self.user_whom_logged_in.id, res.json['id'])
-        res_retrieve = self.app.get(reverse('userprofile-detail', args=(res.json['id'],)))
-        self.assertEqual(res.json, res_retrieve.json)
+        self.assertTrue(self.user_who_logged_in.is_authenticated())
 
     def test_400_if_no_access_token(self):
         url = reverse('api.login', args=('facebook',))

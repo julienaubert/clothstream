@@ -1,20 +1,40 @@
 require.register("scripts/profile", function(exports, require, module) {
-    UserProfileView = function(template_name, user_repo) {
+    var discover = require('scripts/discover');
+
+    UserProfileView = function(template_name, user_repo, user_logged_in) {
         var self = this;
         self.template_name = template_name;
-        self.user = ko.observable(false);
+        self.user_viewed = ko.observable(false);
+        self.menu = ko.observable();
+        self.add_to_collection_vm = new discover.AddToCollectionVM(user_logged_in);
+        self.favorites_vm = new discover.FavoritesVM(user_logged_in);
 
         self.load = function(params) {
             user_repo.fetch(params.user_id, function(user) {
-                self.user(user);
+                self.user_viewed(user);
+                self.load_more_collections(20);
+                self.load_more_favorites(20);
             }, function(status) {
                 // failed fetch user (e.g. 404)
-                self.user(false);
+                self.user_viewed(false);
             });
+            self.menu(params.menu);
         };
 
+        self.show_collections = ko.computed(function() {
+            return self.menu() === 'collections';
+        });
+
+        self.show_favorites = ko.computed(function() {
+            return self.menu() === 'favorites';
+        });
+
         self.load_more_collections = function(last_index) {
-            self.user().collections.load_until_entry(last_index);
+            self.user_viewed().collections.load_until_entry(last_index);
+        };
+
+        self.load_more_favorites = function(last_index) {
+            self.user_viewed().favorites.load_until_entry(last_index);
         };
 
         self.route = function(register) {
@@ -30,16 +50,15 @@ require.register("scripts/profile", function(exports, require, module) {
         };
 
         self.location = function(params) {
-            console.log('loc got params: %o', params)
             return "profile/" + params.user_id + "/";
         };
 
         self.go_to_collections = function() {
-            location.hash = self.location({user_id:self.user().id}) + "collections/";
+            location.hash = self.location({user_id:self.user_viewed().id}) + "collections/";
         };
 
         self.go_to_favorites = function() {
-            location.hash = self.location({user_id:self.user().id}) + "favorites/";
+            location.hash = self.location({user_id:self.user_viewed().id}) + "favorites/";
         };
 
 

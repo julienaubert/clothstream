@@ -20,6 +20,9 @@ npm install
 ./bower_assets.sh
 bundler install
 
+NOTE: do not use gem directly, e.g. if you run brunch before bundler install it may ask you to do: gem install sass
+don't do it! use bundler install (because the latter ensures you install a compatible version and not the latest one)
+
 
 After this can run front-end server which will reload automatically if change anything in frontend/app/*
 

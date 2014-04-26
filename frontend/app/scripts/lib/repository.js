@@ -39,6 +39,10 @@ require.register("scripts/repository", function(exports, require, module) {
     // TODO:
     // - use promises!!
     // - rename fetch to get / force_get
+    // - think about filters and when objects are created - currently filters are not affected at all
+    //      create filters - take optional callback which is called each time a new object is added to its source-repo
+    //      that way can decide if include in filter and where to insert it (consider eg "new collection" which now
+    //      manually is added to user.collections - a filtered repo)
 
     var pageLoader = require('scripts/pageLoader');
     var req = require('scripts/req');
@@ -176,6 +180,10 @@ require.register("scripts/repository", function(exports, require, module) {
             // returns a FilteredRepo, which shares cache with this repository
             filter = filter || {};
             return new FilteredRepo(self, spec.list_url, filter);
+        };
+
+        self.cached = function(db_id) {
+            return _by_dbid[db_id];
         };
 
         self.fetch = function(db_id, success, failure) {

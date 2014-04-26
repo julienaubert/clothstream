@@ -1,7 +1,7 @@
 import json
 from django.core.urlresolvers import reverse
 from django_webtest import WebTest
-from clothstream.tests.fixture_lib import user_factory
+from clothstream.user_profile.fixtures import user_factory
 from clothstream.tests.lib import from_db
 
 
@@ -44,3 +44,4 @@ class TestUpdate(WebTest):
         res = self.app.patch(self.url, json.dumps({'about_me': new_about_me}), content_type='application/json',
                              user=other_user, expect_errors=True)
         self.assertEqual(res.status_code, 403)
+

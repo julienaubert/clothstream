@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from clothstream.collection.fixtures import collection_factory
 from clothstream.collection.models import Collection
 from clothstream.item.fixtures import item_factory
-from clothstream.tests.fixture_lib import user_factory
+from clothstream.user_profile.fixtures import user_factory
 from clothstream.tests.lib import from_db
 
 

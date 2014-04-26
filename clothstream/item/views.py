@@ -25,4 +25,6 @@ class ItemViewSet(viewsets.ModelViewSet):
             params['colors'] = [int(c) for c in params['colors'] if c.isdigit()]
             if len(params['colors']):
                 qs = qs.filter(color__in=params['colors'])
+        if 'favorited_by' in params:
+            qs = qs.filter(favorited_by=params['favorited_by'])
         return super().filter_queryset(qs)

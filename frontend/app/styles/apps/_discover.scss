@@ -53,6 +53,24 @@
   background-color: cornflowerblue;
 }
 
+.product-not-favorited {
+  left: 8px;
+  bottom: 80px;
+  font-size: 1.6em;
+  color: rgb(181, 178, 173)
+}
+
+.product-not-favorited:active {
+  color: rgb(102, 162, 210)
+}
+
+.product-favorited {
+  left: 8px;
+  bottom: 80px;
+  font-size: 1.6em;
+  color: rgb(102, 162, 210)
+}
+
 .product-save {
   bottom: 40px;
   right: 8px;

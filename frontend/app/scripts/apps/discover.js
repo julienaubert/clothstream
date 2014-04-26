@@ -1,20 +1,63 @@
 require.register("scripts/discover", function(exports, require, module) {
+    var req = require('scripts/req');
     var repository = require('scripts/repository');
 
     var construct_item_repo = function() {
-        return new repository.Repository({
+        var favorites_to_unset = [];
+
+        var repo = new repository.Repository({
             list_url: function(page_size, page, filter) {
-                return "http://localhost:8000/api/items/?" +
-                        "page_size=" + page_size +
-                        "&page=" + page +
-                        "&min_price=" + filter.price.min +
-                        "&max_price=" + filter.price.max +
-                        "&colors=" + filter.colors;
+                var url = "http://localhost:8000/api/items/?" +
+                          "page_size=" + page_size +
+                          "&page=" + page;
+                if (filter.price && filter.price.min) {
+                    url += "&min_price=" + filter.price.min;
+                }
+                if (filter.price && filter.price.max) {
+                    url += "&max_price=" + filter.price.max;
+                }
+                if (filter.colors) {
+                    url += "&colors=" + filter.colors;
+                }
+                if (filter.favorited_by) {
+                    url += "&favorited_by=" + filter.favorited_by;
+                }
+                return url;
             },
             detail_url: function(db_id) {
                 return "http://localhost:8000/api/items/" + db_id + "/";
+            },
+            on_init: function(obj) {
+                obj.favorited_by_me = ko.observable(obj.favorited_by_me);
+                obj.favorited_by_me.subscribe(function(value) {
+                    if (value) {
+                        favorites_to_unset.push(obj.id);
+                    }
+                });
             }
         });
+        repo.set_initial_favorites = function(favorited_items) {
+            favorites_to_unset = favorited_items;
+            var i, db_id, item;
+            for (i = 0; i < favorited_items.length; ++i) {
+                db_id = favorited_items[i];
+                item = repo.cached(db_id);
+                if (item) {
+                    item.favorited_by_me(true);
+                }
+            }
+        };
+        repo.unset_initial_favorites = function() {
+            var i, db_id, item;
+            for (i = 0; i < favorites_to_unset.length; ++i) {
+                db_id = favorites_to_unset[i];
+                item = repo.cached(db_id);
+                if (item) {
+                    item.favorited_by_me(false);
+                }
+            }
+        };
+        return repo;
     };
 
     RangeFilter = function(initial_min, initial_max, max_possible) {
@@ -104,6 +147,81 @@ require.register("scripts/discover", function(exports, require, module) {
     };
 
 
+    FavoritesVM = function(user) {
+        var self = this;
+
+        var add_favorite = function(item) {
+            var success = function() { item.favorited_by_me(true); };
+            var error = function() { /* TODO: display something to user. */ };
+            req.post("/api/favorite-item/create/", JSON.stringify({'item': item.id}), success, error);
+        };
+
+        var remove_favorite = function(item) {
+            var success = function() { item.favorited_by_me(false); };
+            var error = function() { /* TODO: display something to user. */ };
+            req.delete("/api/favorite-item/delete/" + item.id + "/", success, error);
+        };
+
+        self.show_must_login = ko.observable(false);
+        self.confirmed_must_login = function() {
+            self.show_must_login(false);
+        };
+
+        self.clicked = function(item) {
+            if (!user()) {
+                self.show_must_login(true);
+                return;
+            }
+            if (item.favorited_by_me()) {
+                remove_favorite(item);
+            } else {
+                add_favorite(item);
+            }
+        };
+    };
+
+    AddToCollectionVM = function(user) {
+        // user add an item to a collection, 2 steps: user clicks add, the item added is stored
+        // once item added exists, the UI reacts and brings up pop-up to select which collection
+        // once user confirms, the confirmed-add-item is called and we have the item and the collection
+        // if not logged in: we reject the item and ask user to login instead
+        var self = this;
+
+        self.user = user;
+        self.item_to_add = ko.observable(null);
+        self.selected_collection = ko.observable();
+
+        self.show_select_collection = ko.computed(function() {
+            return self.item_to_add();
+        });
+
+        self.show_must_login = ko.observable(false);
+
+        self.confirmed_must_login = function() {
+            self.show_must_login(false);
+        };
+
+        self.confirmed_add_item = function() {
+            if (!self.selected_collection()) {
+                // user selected "Choose..." in the drop-down
+                return;
+            }
+            if (!_.contains(self.selected_collection().items(), self.item_to_add())) {
+                self.selected_collection().items.push(self.item_to_add());
+            };
+            self.item_to_add(null);
+        };
+
+        self.add_to_collection = function(item) {
+            if (!user()) {
+                self.show_must_login(true);
+                return;
+            }
+            self.item_to_add(item);
+        };
+    };
+
+
     DiscoverView = function(template_name, item_repo, user_collection_repo, user) {
         var self = this;
         self.template_name = template_name;
@@ -126,34 +244,13 @@ require.register("scripts/discover", function(exports, require, module) {
             }
         });
 
-        self.item_to_add = ko.observable(null);
-        self.selected_collection = ko.observable();
-
-        self.show_add_to_collection = ko.computed(function() {
-            return self.item_to_add() && user();
-        });
-
-        self.show_must_login = ko.computed(function() {
-            return self.item_to_add() && !user();
-        });
-
-        self.confirmed_must_login = function() {
-            self.item_to_add(null);
-        };
-
-        self.confirmed_add_item = function() {
-            if (!_.contains(self.selected_collection().items(), self.item_to_add())) {
-                self.selected_collection().items.push(self.item_to_add());
-            };
-            self.item_to_add(null);
-        };
-
-        self.add_to_collection = function(item) {
-            self.item_to_add(item);
-        };
+        self.add_to_collection_vm = new AddToCollectionVM(user);
+        self.favorites_vm = new FavoritesVM(user);
     };
 
 
     exports.construct_item_repo = construct_item_repo;
     exports.DiscoverView = DiscoverView;
+    exports.AddToCollectionVM = AddToCollectionVM;
+    exports.FavoritesVM = FavoritesVM;
 });

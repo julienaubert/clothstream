@@ -95,8 +95,8 @@
 
 <!--APP: profile.app -->
         <script id="profile.html" type="text/html">
-             <!--ko if: user -->
-                <section class="profile" data-bind="with: user">
+             <!--ko if: user_viewed -->
+                <section class="profile" data-bind="with: user_viewed">
                     <h1 data-bind="text: name"></h1>
                     <img class="profile-picture" data-bind="attr: { src: picture }">
                     <input class="profile-about-me" type="text" data-bind="textInput, value: about_me">
@@ -107,11 +107,26 @@
                             <li class="menu-item" data-bind="click: $parent.go_to_favorites">Favorites</li>
                         </ul>
                     </nav>
-                    <ul class="collection-grid columns-3" data-bind="scrollgrid: {items: collections.objects, on_scroll: $parent.load_more_collections}">
+                </section>
+                <!-- ko if: show_collections -->
+                    <ul class="collection-grid columns-3"
+                        data-bind="scrollgrid: {items: user_viewed().collections.objects,
+                                                on_scroll: load_more_collections}">
                         <!-- ko template: {name: 'collection_card.html'} -->
                         <!-- /ko -->
                     </ul>
-                </section>
+                <!-- /ko -->
+                <!-- ko if: show_favorites -->
+                    <!-- ko template: {name: 'list_products.html',
+                                       data: {
+                                              favorites_vm: favorites_vm,
+                                              add_to_collection_vm: add_to_collection_vm,
+                                              items: user_viewed().favorites.objects,
+                                              load_more: load_more_favorites
+                                       }
+                                      } -->
+                    <!-- /ko -->
+                <!-- /ko -->
             <!-- /ko -->
         </script>
 <!--END APP -->
@@ -149,47 +164,77 @@
         </script>
 
         <script id="discover.html" type="text/html">
+            <div data-bind="template: 'filter_view.html'"></div>
+            <!-- ko template: {name: 'list_products.html',
+                               data: {
+                                   favorites_vm: favorites_vm,
+                                   add_to_collection_vm: add_to_collection_vm,
+                                   items: item_repo.objects,
+                                   load_more: load_more
+                               }
+                              } -->
+            <!-- /ko -->
+        </script>
+<!--END APP -->
+
+
+<!-- SHARED VIEW: list_products -->
+        <!--
+        data: {
+            favorites_vm: # FavoritesVM
+            add_to_collection_vm: # AddToCollectionVM,
+            items: observable array of items (passed to scrollgrid)
+            load_more: (a function, passed to scrollgrid)
+        }
+        -->
+        <script id="list_products.html" type="text/html">
             <!--<div data-bind="template: {name: 'scrollgrid_debug.html',-->
                                        <!--data: $data.item_repo.objects.infinitescroll}"></div>-->
-
-            <div data-bind="template: 'filter_view.html'"></div>
-
-
-            <div data-bind="if: show_add_to_collection">
+            <div data-bind="if: add_to_collection_vm.show_select_collection">
                 <div data-bind="confirmDialog: {title: 'Add to collection',
-                                                target: item_to_add,
+                                                target: add_to_collection_vm.item_to_add,
                                                 cancel_text: 'Cancel',
                                                 confirm_text: 'Yes',
-                                                confirm_click: confirmed_add_item
+                                                confirm_click: add_to_collection_vm.confirmed_add_item
                                                 }
                                ">
-                    <div data-bind="with: item_to_add">
+                    <div data-bind="with: add_to_collection_vm.item_to_add">
                         <p>
                             Add <strong data-bind="text: thumb_title"></strong> to
-                            <select data-bind="options: $parent.user().collections.objects,
+                            <select data-bind="options: $parent.add_to_collection_vm.user().collections.objects,
                                                optionsText: 'title',
                                                optionsCaption: 'Choose...',
-                                               value: $parent.selected_collection"></select>
+                                               value: $parent.add_to_collection_vm.selected_collection"></select>
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div data-bind="if: show_must_login">
+            <div data-bind="if: add_to_collection_vm.show_must_login">
                 <div data-bind="confirmDialog: {title: 'Login',
                                                 confirm_text: 'OK',
-                                                confirm_click: confirmed_must_login
+                                                confirm_click: add_to_collection_vm.confirmed_must_login
                                                 }
                                ">
                     <p>Login to make your own collections.</p>
                 </div>
             </div>
 
+            <div data-bind="if: favorites_vm.show_must_login">
+                <div data-bind="confirmDialog: {title: 'Login',
+                                                confirm_text: 'OK',
+                                                confirm_click: favorites_vm.confirmed_must_login
+                                                }
+                               ">
+                    <p>Login to save your favorites.</p>
+                </div>
+            </div>
+
             <ul class="product-grid columns-3"
-                data-bind="scrollgrid: {items: item_repo.objects, on_scroll: load_more}">
+                data-bind="scrollgrid: {items: items, on_scroll: load_more}">
                 <li class="product-card" data-bind="attr: { id: 'product-card-id-' + $index() },
                                                     click: $root.go_to_product ">
-                    <!-- ko if: $index() < $parent.item_repo.objects.infinitescroll.lastHiddenIndex() -->
+                    <!-- ko if: $index() < $parent.items.infinitescroll.lastHiddenIndex() -->
                         <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
                             <div class="product-thumb">
                                     <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
@@ -201,7 +246,24 @@
                             </a>
 
                             <a data-bind="attr: {href: link},
-                                          click: $parent.add_to_collection,
+                                          click: $parent.favorites_vm.clicked,
+                                          clickBubble: false
+                                         ">
+                                <span class="product-overlay-button product-not-favorited"
+                                      data-bind="hoverVisible: !favorited_by_me(),
+                                                 hoverTargetId: 'product-card-id-' + $index()
+                                                ">
+                                    <i class="fa fa-heart"></i>
+                                </span>
+
+                                <span class="product-overlay-button product-favorited"
+                                      data-bind="visible: favorited_by_me">
+                                    <i class="fa fa-heart"></i>
+                                </span>
+                            </a>
+
+                            <a data-bind="attr: {href: link},
+                                          click: $parent.add_to_collection_vm.add_to_collection,
                                           clickBubble: false,
                                           hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
                                 <span class="product-overlay-button product-save">Add</span>
@@ -217,8 +279,7 @@
                 </li>
             </ul>
         </script>
-<!--END APP -->
-
+<!-- END -->
 
 <!-- SHARED VIEW: collection_card -->
         <script id="collection_card.html" type="text/html">
@@ -243,7 +304,7 @@
                 </ul>
             </li>
         </script>
-<!--END collection -->
+<!--END -->
 
 
 <!--APP: collections.app -->

@@ -5,7 +5,7 @@ require.register("scripts/auth", function(exports, require, module) {
 
     var user = ko.observable(false);
 
-    var construct_user_repo = function(collection_repo) {
+    var construct_user_repo = function(item_repo, collection_repo) {
         var json_patch = function(obj) {
             return ko.toJS({
                 about_me: obj.about_me
@@ -30,6 +30,7 @@ require.register("scripts/auth", function(exports, require, module) {
                 obj.is_authenticated = ko.observable(false);
                 obj.about_me = ko.observable(obj.about_me);
                 obj.collections = collection_repo.create_filter({'owner': obj.id});
+                obj.favorites = item_repo.create_filter({'favorited_by': obj.id});
 
                 obj._last_patch_json = undefined;
                 obj.dirty = ko.computed(function() {
@@ -58,32 +59,19 @@ require.register("scripts/auth", function(exports, require, module) {
     };
 
 
-    var BackendAuth = function(base_url, auth, user_repo) {
-        self.post = function(service, payload, callback) {
-            var target = base_url + service;
-            $.csrfAjax({
-                type: 'POST',
-                url: target,
-                async: true,
-                contentType: "application/json; charset=utf-8",
-                data: payload,
-                success: function(data) {
-                    if (callback) {
-                        callback(data);
-                    }
-                }
-            });
-        };
-
+    var BackendAuth = function(auth, user_repo, item_repo) {
         auth.token.subscribe(function(token) {
-            self.post('register/facebook/', JSON.stringify({"access_token": token}), function(response) {
-                user(user_repo.register(response));
-            });
+            var success = function(response) {
+                user(user_repo.register(response.profile));
+                item_repo.set_initial_favorites(response.favorited_items);
+            };
+            var error = function() { };
+            req.post('api/register/facebook/', JSON.stringify({"access_token": token}), success, error);
         });
     };
 
 
-    var FacebookAuth = function() {
+    var FacebookAuth = function(item_repo) {
         var self = this;
         self.connected = ko.observable(undefined);
         self.token = ko.observable(undefined)
@@ -96,6 +84,7 @@ require.register("scripts/auth", function(exports, require, module) {
             if (self.connected()) {
                 self.token(response.authResponse.accessToken);
             } else {
+                item_repo.unset_initial_favorites();
                 user(false);
             }
         };
@@ -116,8 +105,14 @@ require.register("scripts/auth", function(exports, require, module) {
         };
 
         self.logout = function() {
-            FB.logout();
-            user(false);
+            var success = function() {
+                FB.logout();
+                item_repo.unset_initial_favorites();
+                user(false);
+            };
+            var error = function() {};
+            req.post('api/logout/', "", success, error);
+            // need to unset all favorites!
         };
 
         self.show_login = ko.observable(false);
@@ -126,12 +121,12 @@ require.register("scripts/auth", function(exports, require, module) {
 
     exports.construct_user_repo = construct_user_repo
 
-    exports.create_facebook_auth = function(user_repo) {
-        var auth = new FacebookAuth();
+    exports.create_facebook_auth = function(user_repo, item_repo) {
+        var auth = new FacebookAuth(item_repo);
         fb.load_sdk(function() {
             // at this point 'FB' is available and FB.init has been called
             auth.fb_init();
-            new BackendAuth('//localhost:8000/api/', auth, user_repo);
+            new BackendAuth(auth, user_repo, item_repo);
         });
         return auth;
     };

@@ -1,8 +1,9 @@
 """ Used to generate sampledata / test-data
 """
 from clothstream.item.fixtures import item_factory
+from clothstream.user_profile.fixtures import user_factory
 from clothstream.user_profile.models import UserProfile
-from clothstream.tests.fixture_lib import subargs, nextname, user_factory
+from clothstream.tests.fixture_lib import subargs, nextname
 
 from .models import Item, Collection
 from django_dynamic_fixture import G

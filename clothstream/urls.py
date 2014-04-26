@@ -15,7 +15,7 @@ def api_urls():
     for app in settings.INSTALLED_APPS:
         try:
             import_module(app + '.urls')
-        except (ImportError, AttributeError):
+        except ImportError:
             pass
     return SharedAPIRootRouter.common_api.urls
 

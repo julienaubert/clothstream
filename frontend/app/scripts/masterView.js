@@ -15,7 +15,6 @@ require.register("scripts/masterView", function(exports, require, module) {
 
         // Routes
         self.go_to_profile = function() {
-            console.log('go to profile: %o', {user_id: auth.user().id});
             location.hash = self.views.profile.location({user_id: auth.user().id});
         };
 
@@ -37,7 +36,7 @@ require.register("scripts/masterView", function(exports, require, module) {
 
         // VIEWS
         self.views = {
-            'profile': new profile.UserProfileView("profile.html", user_repo),
+            'profile': new profile.UserProfileView("profile.html", user_repo, auth.user),
             'chosen_product': new product.ProductView("chosen_product.html", self.item_repo),
             'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user),
             'collections': new collections.CollectionsView("collections.html", self.collection_repo, auth.user),

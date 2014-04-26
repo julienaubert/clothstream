@@ -1,10 +1,13 @@
 from django.db.models import Q
 from rest_framework import viewsets, mixins
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from clothstream.lib.permissions import IsOwnerOrReadOnly
+from clothstream.lib.permissions import FieldIsUserOrReadOnlyClassFactory
 from .models import Collection
 from .serializers import CollectionSerializer, CollectionUpdateSerializer
 from rest_framework import permissions
+
+
+IsOwnerOrReadOnly = FieldIsUserOrReadOnlyClassFactory('owner')
 
 
 def bool_param(param):

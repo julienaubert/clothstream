@@ -1,7 +1,10 @@
 import json
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
+from clothstream.favorites.models import FavoritedItem
 from clothstream.item.fixtures import item_factory
+from clothstream.item.models import Item
+from clothstream.user_profile.fixtures import user_factory
 
 
 class TestListItems(WebTest):
@@ -37,3 +40,21 @@ class TestListItems(WebTest):
         item2 = item_factory(price=2)
         res = self.app.get(self.url, params={'max_price': 1})
         self.assertEqual({item1.id}, {obj['id'] for obj in res.json['results']})
+
+    def test_filter_favorited_by(self):
+        item1 = item_factory()
+        item2 = item_factory()
+        user = user_factory()
+        FavoritedItem.objects.create(item=item1, user=user)
+        res = self.app.get(self.url, params={'favorited_by': user.pk})
+        self.assertEqual({item1.id}, {obj['id'] for obj in res.json['results']})
+
+    def test_favorited_by_me(self):
+        item = item_factory()
+        user_who_favorited = user_factory()
+        other_user = user_factory()
+        FavoritedItem.objects.create(item=item, user=user_who_favorited)
+        res = self.app.get(self.url, user=user_who_favorited)
+        self.assertEqual(res.json['results'][0]['favorited_by_me'], True)
+        res = self.app.get(self.url, user=other_user)
+        self.assertEqual(res.json['results'][0]['favorited_by_me'], False)

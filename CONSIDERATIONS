@@ -1,0 +1,62 @@
+== User browse items as anonymous user, decides to login - once logged in should see which items has been favorited. ==
+
+option:
+1. update “favorited_by_me” for existing items in item-repo when user signs-in
+	a) send list of item.id and get back status “favorited_by_me, send e.g. 50 at a time
+		pros: simple
+		cons: if a lot of items in item-repo, could be heavy-db-op.
+	b) on login, also return id of all favorited items
+		pros: minimum nr requests
+		cons:
+		    - could be a large amount of favorited items
+	c) keep track of which items a session has received, and once logging in return only those items
+	   that the session has asked for.
+		pros: minimum nr requests, minimum amount of data
+		cons: complex, state in session
+2. re-fetch all items
+	pros: very simple
+	cons:
+	    what items the user sees will change once logged-in, and this can be quite annoying if they logged in to do
+        something to a specific item.
+
+=> go for 1.b, if "many favorited items" becomes an issue, we can start caching "login-response" per user
+
+
++++ b/frontend/app/scripts/apps/user_profile.js
++        self.favorites_vm = new discover.FavoritesVM(self.user);
+
++++ b/frontend/app/scripts/apps/discover.js
++        self.favorites_vm = new FavoritesVM(user);
+
+
+FavoritedVM
+         self.clicked = function(item) {
+-            if (item.favorited_by_me()) {
++            if (!user()) {
++                // TODO: display login
++                return;
++            }
+
+
+
+== front-end: where to store state "favorited an item" - on user or on item? ==
+
+backend gives a list of favorited items for the user on login. we have some items already in item_repo.
+
+option1:
+- item knows: item.favorited_by_me(), item.favorited_by_me(!item.favorited_by_me())
+=> when user signs in, we go through items and update their favorited_by_me_status, when logs out, we set all to false
+
+option2:
+- user knows: user.has_favorited_item(item), user.toggle_favorited(item)
+
+option3:
+- FavoritesItemVM().is_favorited(item), FavoritesItemVM().set_favorited(item), set_favorited(item)
+
+option2 and 3 looks in some sense nicer (decouple item from whom favored it), but it is not easy with knockout.
+for ko to update dom, the is_favorited(item) function must return a computable function, the tricky part is when
+user then favorites an item not yet favorited, we must write to some observable so that ko is triggered to update dom.
+we must then loop through each item in the item_repo, and be aware of any new items retrieved to make observables for
+them.
+=> once we consider that, we see that option1 is very simple, even though perhaps awkward to set/reset favorites upon
+log-in/log-out
