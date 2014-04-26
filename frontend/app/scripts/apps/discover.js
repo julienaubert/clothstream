@@ -142,7 +142,9 @@ require.register("scripts/discover", function(exports, require, module) {
         };
 
         self.confirmed_add_item = function() {
-            self.selected_collection().items.push(self.item_to_add());
+            if (!_.contains(self.selected_collection().items(), self.item_to_add())) {
+                self.selected_collection().items.push(self.item_to_add());
+            };
             self.item_to_add(null);
         };
 
