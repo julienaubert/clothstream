@@ -75,10 +75,30 @@
 
 <!--APP: product.app -->
         <script id="chosen_product.html" type="text/html">
+            <div data-bind="if: favorites_vm.show_must_login">
+                <div data-bind="confirmDialog: {title: 'Login',
+                                                confirm_text: 'OK',
+                                                confirm_click: favorites_vm.confirmed_must_login
+                                                }
+                               ">
+                    <p>Login to save your favorites.</p>
+                </div>
+            </div>
             <div class="chosen-product"
                  data-bind="with: product">
                 <div class="product-view">
                     <img data-bind="attr: { src: thumb_image_url }">
+                    <a data-bind="attr: {href: link},
+                                  click: $parent.favorites_vm.clicked,
+                                  clickBubble: false
+                                 ">
+                        <span class="product-overlay-button"
+                              data-bind="css: {'product-favorited': favorited_by_me,
+                                               'product-not-favorited': !favorited_by_me()
+                                              }">
+                            <i class="fa fa-heart"></i>
+                        </span>
+                    </a>
                 </div>
                 <h1 data-bind="text: thumb_title"></h1>
                 <div class="material-info" data-bind="text: material"></div>
@@ -86,6 +106,7 @@
                     <!-- ko text: local_currency --><!-- /ko -->:
                     <!-- ko text: local_price --><!-- /ko -->
                 </span>
+
                 <span class="favorited-count-container">
                     <i class="favorited-count-heart fa fa-heart"></i>
                     <span class="favorited-count-value" data-bind="text: favorited_count"></span>

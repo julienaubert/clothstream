@@ -104,7 +104,7 @@ require.register("scripts/collections", function(exports, require, module) {
                     // This has a cost in memory
                     var first_call = collection._last_patch_json === undefined;
                     if (first_call) {
-                    // first call is the update when we got the object, skip post on that one
+                        // first call is the update when we got the object, skip post on that one
                         collection._last_patch_json = JSON.stringify(collection._patch_json()); // ensure we subscribe
                         return;
                     }

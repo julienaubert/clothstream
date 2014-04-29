@@ -34,11 +34,15 @@ require.register("scripts/masterView", function(exports, require, module) {
             location.hash = "collections/";
         };
 
+        var favorites_vm = new discover.FavoritesVM(auth.user);
+        var add_to_collection_vm  = new discover.AddToCollectionVM(auth.user);
+
         // VIEWS
         self.views = {
-            'profile': new profile.UserProfileView("profile.html", user_repo, auth.user),
-            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo),
-            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user),
+            'profile': new profile.UserProfileView("profile.html", user_repo, add_to_collection_vm, favorites_vm),
+            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo, favorites_vm),
+            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user,
+                add_to_collection_vm, favorites_vm),
             'collections': new collections.CollectionsView("collections.html", self.collection_repo, auth.user),
             'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections)
         };

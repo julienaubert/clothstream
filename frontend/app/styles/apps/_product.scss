@@ -10,7 +10,10 @@
   float: left;
 }
 
-
+.product-view img {
+  max-height: 400px;
+  max-width: 400px;
+}
 
 
 .favorited-count-container {
@@ -39,4 +42,11 @@
   padding-right: 10px;
   font-size: 1.2em;
   color: rgb(102, 162, 210)
+}
+
+.product-not-favorited {
+  left: 8px;
+  bottom: 80px;
+  font-size: 1.6em;
+  color: rgb(181, 178, 173)
 }

@@ -42,7 +42,7 @@ describe('Repository.on_init', function() {
               object.name = ko.observable(object.name);
           },
           requests: requests
-      })
+      });
       var detail_reply1_jonn = {id: 1, name: 'jonn'};
       var detail_reply2_john = {id: 1, name: 'john'};
       requests.get = function(args) { args.success(detail_reply1_jonn); };

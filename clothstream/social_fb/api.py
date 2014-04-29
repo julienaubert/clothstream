@@ -3,6 +3,7 @@ from facebook import GraphAPI
 
 
 def enrich_via_facebook(user):
+    # todo: only enrich if new user
     social_user = user.social_auth.filter(provider='facebook').first()
     if not social_user:
         return

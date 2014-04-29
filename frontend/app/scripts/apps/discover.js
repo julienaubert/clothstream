@@ -29,22 +29,22 @@ require.register("scripts/discover", function(exports, require, module) {
             },
             on_init: function(obj) {
                 obj.favorited_by_me = ko.observable(obj.favorited_by_me);
-                // we won't re-fetch items when user favorite/unfavorite the items,
-                // so we keep a local-count when user make changes
-                // we therefore need to make favorited_count (which we get from server) a computed observable
-                obj.local_favorited_count = ko.observable(0);
                 obj.favorited_by_me.subscribe(function(value) {
                     if (value) {
-                        // we also need to keep track which items to unset when user signs-off
+                        // we need to keep track which items to unset when user signs-off
                         favorites_to_unset.push(obj.id);
-                        obj.local_favorited_count(obj.local_favorited_count()+1);
-                    } else {
-                        obj.local_favorited_count(obj.local_favorited_count()-1);
                     }
                 });
-                obj._initial_count = obj.favorited_count;
-                obj.favorited_count = ko.computed(function() {
-                    return obj._initial_count + obj.local_favorited_count();
+                // we won't re-fetch items when user favorite/unfavorite the items, so we modify favorited-count
+                // when user changes favorited_by_me.
+                // note: favorited_by_me should only be written to once received success from server
+                obj.favorited_count = ko.observable(obj.favorited_count);
+                obj.favorited_by_me.subscribe(function(value) {
+                    if (value) {
+                        obj.favorited_count(obj.favorited_count()+1);
+                    } else {
+                        obj.favorited_count(obj.favorited_count()-1);
+                    }
                 });
             }
         });
@@ -55,7 +55,9 @@ require.register("scripts/discover", function(exports, require, module) {
                 db_id = favorited_items[i];
                 item = repo.cached(db_id);
                 if (item) {
+                    var pre_count = item.favorited_count();
                     item.favorited_by_me(true);
+                    item.favorited_count(pre_count);
                 }
             }
         };
@@ -65,7 +67,9 @@ require.register("scripts/discover", function(exports, require, module) {
                 db_id = favorites_to_unset[i];
                 item = repo.cached(db_id);
                 if (item) {
+                    var pre_count = item.favorited_count();
                     item.favorited_by_me(false);
+                    item.favorited_count(pre_count);
                 }
             }
         };
@@ -234,11 +238,13 @@ require.register("scripts/discover", function(exports, require, module) {
     };
 
 
-    DiscoverView = function(template_name, item_repo, user_collection_repo, user) {
+    DiscoverView = function(template_name, item_repo, user_collection_repo, user, add_to_collection_vm, favorites_vm) {
         var self = this;
         self.template_name = template_name;
         self.user = user;
         self.item_repo = item_repo.create_filter();
+        self.add_to_collection_vm = add_to_collection_vm;
+        self.favorites_vm = favorites_vm;
 
         self.load_more = function(last_item_index) {
             self.item_repo.load_until_entry(last_item_index);
@@ -255,9 +261,6 @@ require.register("scripts/discover", function(exports, require, module) {
                 user().collections.load_until_entry(20);
             }
         });
-
-        self.add_to_collection_vm = new AddToCollectionVM(user);
-        self.favorites_vm = new FavoritesVM(user);
     };
 
 
