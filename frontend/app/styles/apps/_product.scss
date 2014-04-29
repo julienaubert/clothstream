@@ -9,3 +9,34 @@
 .product-view {
   float: left;
 }
+
+
+
+
+.favorited-count-container {
+  width: 100px;
+  padding: 15px 20px;
+  font-size: 20px;
+
+  border: solid 1px;
+  border-color: rgb(175, 177, 185);
+  border-radius: 1px;
+
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  outline: medium none;
+  margin: 0px;
+  display: inline-block;
+}
+
+.favorited-count-value {
+  padding-left: 10px;
+  font-size: 1.2em;
+}
+
+.favorited-count-heart {
+  padding-right: 10px;
+  font-size: 1.2em;
+  color: rgb(102, 162, 210)
+}

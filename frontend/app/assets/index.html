@@ -86,6 +86,10 @@
                     <!-- ko text: local_currency --><!-- /ko -->:
                     <!-- ko text: local_price --><!-- /ko -->
                 </span>
+                <span class="favorited-count-container">
+                    <i class="favorited-count-heart fa fa-heart"></i>
+                    <span class="favorited-count-value" data-bind="text: favorited_count"></span>
+                </span>
                 <a data-bind="attr: {href: link}"><span class="buy-button">Buy</span></a>
             </div>
         </script>

@@ -29,10 +29,22 @@ require.register("scripts/discover", function(exports, require, module) {
             },
             on_init: function(obj) {
                 obj.favorited_by_me = ko.observable(obj.favorited_by_me);
+                // we won't re-fetch items when user favorite/unfavorite the items,
+                // so we keep a local-count when user make changes
+                // we therefore need to make favorited_count (which we get from server) a computed observable
+                obj.local_favorited_count = ko.observable(0);
                 obj.favorited_by_me.subscribe(function(value) {
                     if (value) {
+                        // we also need to keep track which items to unset when user signs-off
                         favorites_to_unset.push(obj.id);
+                        obj.local_favorited_count(obj.local_favorited_count()+1);
+                    } else {
+                        obj.local_favorited_count(obj.local_favorited_count()-1);
                     }
+                });
+                obj._initial_count = obj.favorited_count;
+                obj.favorited_count = ko.computed(function() {
+                    return obj._initial_count + obj.local_favorited_count();
                 });
             }
         });

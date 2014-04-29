@@ -10,11 +10,12 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
     local_price = serializers.SerializerMethodField('get_local_price')
     local_currency = serializers.SerializerMethodField('get_local_currency')
     favorited_by_me = SerializerMethodField('get_favorited_by_me')
+    favorited_count = SerializerMethodField('get_favorited_count')
 
     class Meta:
         model = Item
         fields = ('id', 'uuid', 'thumb_title', 'thumb_image_url', 'link', 'local_price', 'local_currency', 'material',
-                  'color', 'favorited_by_me')
+                  'color', 'favorited_by_me', 'favorited_count')
 
     def get_favorited_by_me(self, obj):
         user_pk = self.context['request'].user.pk
@@ -25,3 +26,6 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_local_currency(self, obj):
         return 'SEK'
+
+    def get_favorited_count(self, obj):
+        return FavoritedItem.objects.filter(item=obj).count()

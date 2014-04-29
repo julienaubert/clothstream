@@ -1,9 +1,9 @@
-import json
+from django.test import TestCase
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 from clothstream.favorites.models import FavoritedItem
+from clothstream.favorites.serializers import FavoritedItemSerializer
 from clothstream.item.fixtures import item_factory
-from clothstream.item.models import Item
 from clothstream.user_profile.fixtures import user_factory
 
 
