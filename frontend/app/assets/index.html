@@ -75,6 +75,36 @@
 
 <!--APP: product.app -->
         <script id="chosen_product.html" type="text/html">
+            <div data-bind="if: add_to_collection_vm.show_select_collection">
+                <div data-bind="confirmDialog: {title: 'Add to collection',
+                                                target: add_to_collection_vm.item_to_add,
+                                                cancel_text: 'Cancel',
+                                                confirm_text: 'Yes',
+                                                confirm_click: add_to_collection_vm.confirmed_add_item
+                                                }
+                               ">
+                    <div data-bind="with: add_to_collection_vm.item_to_add">
+                        <p>
+                            Add <strong data-bind="text: thumb_title"></strong> to
+                            <select data-bind="options: $parent.add_to_collection_vm.user().collections.objects,
+                                               optionsText: 'title',
+                                               optionsCaption: 'Choose...',
+                                               value: $parent.add_to_collection_vm.selected_collection"></select>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div data-bind="if: add_to_collection_vm.show_must_login">
+                <div data-bind="confirmDialog: {title: 'Login',
+                                                confirm_text: 'OK',
+                                                confirm_click: add_to_collection_vm.confirmed_must_login
+                                                }
+                               ">
+                    <p>Login to make your own collections.</p>
+                </div>
+            </div>
+
             <div data-bind="if: favorites_vm.show_must_login">
                 <div data-bind="confirmDialog: {title: 'Login',
                                                 confirm_text: 'OK',
@@ -99,6 +129,11 @@
                             <i class="fa fa-heart"></i>
                         </span>
                     </a>
+                    <a data-bind="attr: {href: link},
+                                  click: $parent.add_to_collection_vm.add_to_collection,
+                                  clickBubble: false">
+                        <span class="product-overlay-button product-save">Add</span>
+                    </a>
                 </div>
                 <h1 data-bind="text: thumb_title"></h1>
                 <div class="material-info" data-bind="text: material"></div>
@@ -112,6 +147,7 @@
                     <span class="favorited-count-value" data-bind="text: favorited_count"></span>
                 </span>
                 <a data-bind="attr: {href: link}"><span class="buy-button">Buy</span></a>
+
             </div>
         </script>
 <!--END APP -->

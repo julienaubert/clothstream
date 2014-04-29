@@ -40,7 +40,8 @@ require.register("scripts/masterView", function(exports, require, module) {
         // VIEWS
         self.views = {
             'profile': new profile.UserProfileView("profile.html", user_repo, add_to_collection_vm, favorites_vm),
-            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo, favorites_vm),
+            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo,
+                add_to_collection_vm, favorites_vm),
             'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user,
                 add_to_collection_vm, favorites_vm),
             'collections': new collections.CollectionsView("collections.html", self.collection_repo, auth.user),
