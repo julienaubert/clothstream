@@ -175,7 +175,7 @@ require.register("scripts/discover", function(exports, require, module) {
         var remove_favorite = function(item) {
             var success = function() { item.favorited_by_me(false); };
             var error = function() { /* TODO: display something to user. */ };
-            req.delete("/api/favorite-item/delete/" + item.id + "/", success, error);
+            req.delete("/api/favorite-item/delete/" + item.id + "/", {}, success, error);
         };
 
         self.show_must_login = ko.observable(false);
@@ -213,6 +213,11 @@ require.register("scripts/discover", function(exports, require, module) {
 
         self.show_must_login = ko.observable(false);
 
+        var request_add_item = function(item, collection, success, error) {
+            req.post("/api/collecteditem/create/", JSON.stringify({'item': item.id, 'collection': collection.id}),
+                     success, error);
+        };
+
         self.confirmed_must_login = function() {
             self.show_must_login(false);
         };
@@ -223,9 +228,16 @@ require.register("scripts/discover", function(exports, require, module) {
                 return;
             }
             if (!_.contains(self.selected_collection().items(), self.item_to_add())) {
-                self.selected_collection().items.push(self.item_to_add());
+                var success = function() {
+                    self.selected_collection().items.push(self.item_to_add());
+                    self.item_to_add(null);
+                };
+                var error = function() {
+                    self.item_to_add(null);
+                    /* TODO: display something to user. */
+                };
+                request_add_item(self.item_to_add(), self.selected_collection(), success, error);
             };
-            self.item_to_add(null);
         };
 
         self.add_to_collection = function(item) {

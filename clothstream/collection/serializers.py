@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from clothstream.item.serializers import ItemSerializer
-from .models import Collection
+from .models import Collection, CollectedItem
 
 
 class CollectionSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,4 +23,13 @@ class CollectionUpdateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Collection
-        fields = ('id', 'title', 'items', 'description', 'public')
+        fields = ('id', 'title', 'description', 'public')
+
+
+class CollectedItemSerializer(serializers.HyperlinkedModelSerializer):
+    item = PrimaryKeyRelatedField(write_only=True)
+    collection = PrimaryKeyRelatedField(write_only=True)
+
+    class Meta:
+        model = CollectedItem
+        fields = ('item', 'collection')

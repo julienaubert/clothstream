@@ -5,7 +5,7 @@ from clothstream.user_profile.fixtures import user_factory
 from clothstream.user_profile.models import UserProfile
 from clothstream.tests.fixture_lib import subargs, nextname
 
-from .models import Item, Collection
+from .models import Item, Collection, CollectedItem
 from django_dynamic_fixture import G
 
 
@@ -28,7 +28,9 @@ def collection_factory(initial_items=3, **kwargs):
     if 'items' not in kwargs:
         if Item.objects.count() < initial_items:
             for _ in range(initial_items - Item.objects.count()):
-                item_factory(**subargs('item', kwargs))
+                item_args = subargs(kwargs, 'item')
+                item_factory(**item_args)
         if initial_items:
-            collection.items = Item.objects.order_by('?')[:initial_items]
+            for item in Item.objects.order_by('?')[:initial_items]:
+                CollectedItem.objects.create(item=item, collection=collection)
     return collection

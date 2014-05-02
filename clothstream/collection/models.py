@@ -10,9 +10,15 @@ class Collection(models.Model):
     uuid = UUIDField(auto=True)
     title = models.CharField(_('Title'), max_length=100, help_text=_('Name of the collection'))
     owner = models.ForeignKey(UserProfile, related_name='collections', help_text=_('User who created this collection'))
-    items = models.ManyToManyField(Item, help_text=_("Items which are in the collection"))
+    items = models.ManyToManyField(Item, through='CollectedItem', help_text=_("Items which are in the collection"))
     description = models.TextField(_('Description'), blank=True, help_text=_('Description of the collection'))
     public = models.BooleanField(_('Public'), help_text=_('Public collections can be seen by anyone'), default=True)
 
     class Meta:
         ordering = ['-pk']
+
+
+class CollectedItem(models.Model):
+    uuid = UUIDField(auto=True)
+    collection = models.ForeignKey(Collection, help_text=_('Collection item is in'))
+    item = models.ForeignKey(Item, help_text=_('Item collected'))

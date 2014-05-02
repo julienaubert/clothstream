@@ -1,4 +1,6 @@
 require.register("scripts/collection", function(exports, require, module) {
+    var req = require('scripts/req');
+
     CollectionView = function(template_name, collection_repo, route_when_delete, add_to_collection_vm, favorites_vm) {
         var self = this;
         self.template_name = template_name;
@@ -24,9 +26,21 @@ require.register("scripts/collection", function(exports, require, module) {
             route_when_delete();
         };
 
+
+        var request_remove_item = function(item, collection, success, error) {
+            req.delete("/api/collecteditem/delete/" + collection.id + "/", JSON.stringify({'item': item.id}),
+                       success, error);
+        };
+
         self.remove_from_collection = function(item, event) {
-            var items = _.without(self.collection().items(), item);
-            self.collection().items(items);
+            var success = function() {
+                var items = _.without(self.collection().items(), item);
+                self.collection().items(items);
+            };
+            var error = function() {
+                // TODO: show error to user
+            };
+            request_remove_item(item, self.collection(), success, error);
         };
 
     };

@@ -1,9 +1,11 @@
 from django.db.models import Q
-from rest_framework import viewsets, mixins
+from rest_framework import viewsets, mixins, status
+from rest_framework.permissions import BasePermission
+from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from clothstream.lib.permissions import FieldIsUserOrReadOnlyClassFactory
-from .models import Collection
-from .serializers import CollectionSerializer, CollectionUpdateSerializer
+from .models import Collection, CollectedItem
+from .serializers import CollectionSerializer, CollectionUpdateSerializer, CollectedItemSerializer
 from rest_framework import permissions
 
 
@@ -67,3 +69,34 @@ class CollectionCreate(mixins.CreateModelMixin, viewsets.GenericViewSet):
             response.data = serializer.data
         return response
 
+
+IsCollectionOwnerOrReadOnly = FieldIsUserOrReadOnlyClassFactory('collection.owner')
+
+
+class CollectedItemDestroy(mixins.DestroyModelMixin, viewsets.GenericViewSet):
+    serializer_class = CollectedItemSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsCollectionOwnerOrReadOnly)
+    lookup_field = 'collection__id'
+
+    def get_queryset(self):
+        item_pk = self.request.DATA.get('item', None)
+        if item_pk is None:
+            return CollectedItem.objects.none
+        return CollectedItem.objects.filter(item__pk=item_pk)
+
+
+class CollectedItemCreate(mixins.CreateModelMixin, viewsets.GenericViewSet):
+    queryset = CollectedItem.objects.all()
+    serializer_class = CollectedItemSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+
+    """ Need to check that the user owns the passed collection.
+    Cannot use IsCollectionOwnerOrReadOnly as there is no object on the url (i.e. create has no pk-arg in the url)
+    So instead we override create, check the permission there, and then call super if ok.
+    """
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.DATA, files=request.FILES)
+        if serializer.is_valid():
+            if serializer.object.collection.owner.pk != request.user.pk:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+        return super().create(request, *args, **kwargs)

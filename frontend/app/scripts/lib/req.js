@@ -32,8 +32,8 @@ require.register("scripts/req", function(exports, require, module) {
         // args.error callback same as in $.ajax
         lib.request('GET', args.url, {}, args.success, args.error);
     };
-    lib.delete = function(target, success, error) {
-        lib.request('DELETE', target, {}, success, error);
+    lib.delete = function(target, payload, success, error) {
+        lib.request('DELETE', target, payload, success, error);
     };
 
     exports.delete = lib.delete;

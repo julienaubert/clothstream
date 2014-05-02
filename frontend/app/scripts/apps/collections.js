@@ -55,7 +55,6 @@ require.register("scripts/collections", function(exports, require, module) {
         var _patch_json = function() {
             var collection = this;
             return ko.toJS({
-                items: _.map(collection.items(), function(item) { return item.id; }),
                 title: collection.title,
                 description: collection.description,
                 public: collection.public

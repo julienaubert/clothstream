@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from clothstream.lib.get_field_value import get_field_value
 
 
 class FieldIsUserOrReadOnly(permissions.BasePermission):
@@ -6,9 +7,7 @@ class FieldIsUserOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        if not hasattr(obj, self.user_field):
-            raise ValueError("field '{}' does not exist on '{}'".format(self.user_field, obj))
-        return getattr(obj, self.user_field) == request.user
+        return get_field_value(obj, self.user_field) == request.user
 
 
 def FieldIsUserOrReadOnlyClassFactory(user_field='user'):
