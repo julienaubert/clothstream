@@ -19,9 +19,10 @@ $legacy-support-for-mozilla: false;
 //@import "debug";
 @import "widgets";
 @import "filter";
+@import "apps/product";
+@import "apps/collection";
 @import "apps/collections";
 @import "apps/discover";
-@import "apps/product";
 @import "apps/profile";
 
 

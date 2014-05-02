@@ -13,7 +13,7 @@ require.register("scripts/initialize", function(exports, require, module) {
     $.csrfAjax = csrf.setup_csrf_ajax();
 
     var item_repo =  discover.construct_item_repo();
-    var collection_repo = collections.construct_collection_repo();
+    var collection_repo = collections.construct_collection_repo(item_repo);
     var user_repo = auth.construct_user_repo(item_repo, collection_repo);
 
     ko.applyBindings(new masterView.MasterViewModel(

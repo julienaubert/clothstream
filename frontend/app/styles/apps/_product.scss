@@ -1,3 +1,19 @@
+
+.product-card {
+    position: relative;
+    max-width: 180px;
+    max-width: 180px;
+    border: 1px solid #feffdd;
+    display: inline-block;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    padding-bottom: 0em;
+    padding-top: 0em;
+    margin: 0 0 2.5% 2.5%;
+    background: #fff;
+}
+
+
 .chosen-product {
   clear: both;
 }
@@ -15,6 +31,13 @@
   max-width: 400px;
 }
 
+
+.product-thumb {
+}
+
+.product-info {
+  font-size: 0.6em;
+}
 
 .favorited-count-container {
   width: 100px;
@@ -49,4 +72,69 @@
   bottom: 80px;
   font-size: 1.6em;
   color: rgb(181, 178, 173)
+}
+
+
+.product-overlay {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: rgba(0,0,0,0.6)
+}
+
+.product-overlay-button {
+  position: absolute;
+  width: 35px;
+  padding: 5px 5px;
+  font-size: 15px;
+
+  z-index: 300;
+
+  background: none repeat scroll 0% 0%;
+  text-align: center;
+  text-transform: uppercase;
+
+  border: medium none;
+  outline: medium none;
+  margin: 0px;
+  border-radius: 1px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.product-buy {
+  bottom: 40px;
+  left: 8px;
+  background-color: cornflowerblue;
+}
+
+.product-not-favorited {
+  left: 8px;
+  bottom: 80px;
+  font-size: 1.6em;
+  color: rgb(181, 178, 173)
+}
+
+.product-not-favorited:active {
+  color: rgb(102, 162, 210)
+}
+
+.product-favorited {
+  left: 8px;
+  bottom: 80px;
+  font-size: 1.6em;
+  color: rgb(102, 162, 210)
+}
+
+.product-save {
+  bottom: 40px;
+  right: 8px;
+  background-color: lightsalmon;
+}
+
+.product-remove {
+  right: 8px;
+  bottom: 80px;
+  font-size: 1.6em;
+  color: rgb(0, 0, 0)
 }

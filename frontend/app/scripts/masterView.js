@@ -45,7 +45,8 @@ require.register("scripts/masterView", function(exports, require, module) {
             'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user,
                 add_to_collection_vm, favorites_vm),
             'collections': new collections.CollectionsView("collections.html", self.collection_repo, auth.user),
-            'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections)
+            'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections,
+                add_to_collection_vm, favorites_vm)
         };
         self.active_view = ko.observable();
 

@@ -27,7 +27,8 @@
     "speakingurl": "~0.9",
     "jqueryui": "~1.10.4",
     "knockout-jqueryui": "https://github.com/gvas/knockout-jqueryui/releases/download/v1.0.0/knockout-jqueryui.js",
-    "jquery-cookie": "~1.4"
+    "jquery-cookie": "~1.4",
+    "stacktrace": "~0.6"
   },
   "devDependencies": {
     "mocha": "~1.17",

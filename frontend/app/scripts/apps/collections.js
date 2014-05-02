@@ -51,7 +51,7 @@ require.register("scripts/collections", function(exports, require, module) {
         };
     };
 
-    var construct_collection_repo = function() {
+    var construct_collection_repo = function(item_repo) {
         var _patch_json = function() {
             var collection = this;
             return ko.toJS({
@@ -82,6 +82,9 @@ require.register("scripts/collections", function(exports, require, module) {
             },
             delete_url: function(db_id) {
                 return "http://localhost:8000/api/collections/delete/" + db_id + "/";
+            },
+            repo_relations: {
+                items: item_repo
             },
             on_init: function(collection) {
                 collection.items = ko.observableArray(collection.items);

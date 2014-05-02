@@ -4,6 +4,10 @@
 
 once bower pkg fixed, add to bower.json: "knockout-js-infinite-scroll": "0.1.0"
 
+== Patterns ==
+
+Do: Update state on front-end only after receiving success from server.
+Otherwise we can get into an inconsistent state, causing frustrations to users and hard-to-debug bug-reports.
 
 
 == Frontend ==

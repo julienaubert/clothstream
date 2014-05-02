@@ -183,7 +183,8 @@
                                               favorites_vm: favorites_vm,
                                               add_to_collection_vm: add_to_collection_vm,
                                               items: user_viewed().favorites.objects,
-                                              load_more: load_more_favorites
+                                              load_more: load_more_favorites,
+                                              product_class: 'product-in-favorites'
                                        }
                                       } -->
                     <!-- /ko -->
@@ -231,7 +232,8 @@
                                    favorites_vm: favorites_vm,
                                    add_to_collection_vm: add_to_collection_vm,
                                    items: item_repo.objects,
-                                   load_more: load_more
+                                   load_more: load_more,
+                                   product_class: 'product-in-discover'
                                }
                               } -->
             <!-- /ko -->
@@ -239,18 +241,12 @@
 <!--END APP -->
 
 
-<!-- SHARED VIEW: list_products -->
-        <!--
-        data: {
-            favorites_vm: # FavoritesVM
-            add_to_collection_vm: # AddToCollectionVM,
-            items: observable array of items (passed to scrollgrid)
-            load_more: (a function, passed to scrollgrid)
-        }
-        -->
-        <script id="list_products.html" type="text/html">
-            <!--<div data-bind="template: {name: 'scrollgrid_debug.html',-->
-                                       <!--data: $data.item_repo.objects.infinitescroll}"></div>-->
+<!-- SHARED VIEW: product_card_shared
+data:
+        add_to_collection_vm
+        favorites_vm
+-->
+        <script id="product_card_shared.html" type="text/html">
             <div data-bind="if: add_to_collection_vm.show_select_collection">
                 <div data-bind="confirmDialog: {title: 'Add to collection',
                                                 target: add_to_collection_vm.item_to_add,
@@ -281,66 +277,114 @@
                 </div>
             </div>
 
-            <div data-bind="if: favorites_vm.show_must_login">
-                <div data-bind="confirmDialog: {title: 'Login',
-                                                confirm_text: 'OK',
-                                                confirm_click: favorites_vm.confirmed_must_login
-                                                }
-                               ">
-                    <p>Login to save your favorites.</p>
-                </div>
-            </div>
 
+            <!--<div data-bind="if: favorites_vm.show_must_login">-->
+                <!--<div data-bind="confirmDialog: {title: 'Login',-->
+                                                <!--confirm_text: 'OK',-->
+                                                <!--confirm_click: favorites_vm.confirmed_must_login-->
+                                                <!--}-->
+                               <!--">-->
+                    <!--<p>Login to save your favorites.</p>-->
+                <!--</div>-->
+            <!--</div>-->
+        </script>
+<!-- END -->
+
+<!-- SHARED VIEW: product_card_list_item
+data:
+    add_to_collection_vm
+    favorites_vm
+    $index
+    items
+    product_class: 'product-in-collection'
+
+optional:
+    remove_from_collection - a function called when click trash-can
+
+-->
+        <script id="product_card_list_item.html" type="text/html">
+            <!--<pre data-bind="text: ko.toJSON($parent, null, 2)"></pre>-->
+            <li data-bind="attr: { id: 'product-card-id-' + $index() },
+                                   click: $root.go_to_product,
+                                   css: $parent.product_class">
+                <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
+                    <div class="product-thumb">
+                            <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
+                    </div>
+                    <a data-bind="attr: {href: link},
+                                  domClick,
+                                  hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
+                        <span class="product-overlay-button product-buy">Buy</span>
+                    </a>
+
+                    <a data-bind="attr: {href: link},
+                                  click: $parent.favorites_vm.clicked,
+                                  clickBubble: false
+                                 ">
+                        <span class="product-overlay-button product-not-favorited"
+                              data-bind="hoverVisible: !favorited_by_me(),
+                                         hoverTargetId: 'product-card-id-' + $index()
+                                        ">
+                            <i class="fa fa-heart"></i>
+                        </span>
+
+                        <span class="product-overlay-button product-favorited"
+                              data-bind="visible: favorited_by_me">
+                            <i class="fa fa-heart"></i>
+                        </span>
+                    </a>
+
+                    <a data-bind="attr: {href: link},
+                                  click: $parent.add_to_collection_vm.add_to_collection,
+                                  clickBubble: false,
+                                  hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
+                        <span class="product-overlay-button product-save">Add</span>
+                    </a>
+
+                    <!-- ko if: $parent.remove_from_collection -->
+                        <a data-bind="attr: {href: link},
+                                      click: $parent.remove_from_collection,
+                                      clickBubble: false
+                                     ">
+                            <span class="product-overlay-button product-remove"
+                                  data-bind="hoverVisible: true,
+                                             hoverTargetId: 'product-card-id-' + $index()
+                                            ">
+                                <i class="fa fa-trash-o"></i>
+                            </span>
+                        </a>
+                    <!-- /ko -->
+
+                    <div class="product-overlay-detail">
+                    </div>
+                    <div class="product-info">
+                        <h3><span data-bind="text: thumb_title"></span></h3>
+                    </div>
+                <!--</a>-->
+            </li>
+        </script>
+<!-- END -->
+
+
+<!-- SHARED VIEW: list_products
+data:
+    see product_card_shared.html
+    see product_card_list_item.html
+    load_more: (a function, passed to scrollgrid)
+-->
+        <script id="list_products.html" type="text/html">
+            <!--<div data-bind="template: {name: 'scrollgrid_debug.html',-->
+                                       <!--data: $data.item_repo.objects.infinitescroll}"></div>-->
+            <!-- ko template: {name: 'product_card_shared.html'} -->
+            <!-- /ko -->
             <ul class="product-grid columns-3"
                 data-bind="scrollgrid: {items: items, on_scroll: load_more}">
-                <li class="product-card" data-bind="attr: { id: 'product-card-id-' + $index() },
-                                                    click: $root.go_to_product ">
-                    <!-- ko if: $index() < $parent.items.infinitescroll.lastHiddenIndex() -->
-                        <!--<a data-bind="attr: { href: link, title: thumb_title }">-->
-                            <div class="product-thumb">
-                                    <img style="height:120px" data-bind="attr: { src: thumb_image_url }">
-                            </div>
-                            <a data-bind="attr: {href: link},
-                                          domClick,
-                                          hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
-                                <span class="product-overlay-button product-buy">Buy</span>
-                            </a>
-
-                            <a data-bind="attr: {href: link},
-                                          click: $parent.favorites_vm.clicked,
-                                          clickBubble: false
-                                         ">
-                                <span class="product-overlay-button product-not-favorited"
-                                      data-bind="hoverVisible: !favorited_by_me(),
-                                                 hoverTargetId: 'product-card-id-' + $index()
-                                                ">
-                                    <i class="fa fa-heart"></i>
-                                </span>
-
-                                <span class="product-overlay-button product-favorited"
-                                      data-bind="visible: favorited_by_me">
-                                    <i class="fa fa-heart"></i>
-                                </span>
-                            </a>
-
-                            <a data-bind="attr: {href: link},
-                                          click: $parent.add_to_collection_vm.add_to_collection,
-                                          clickBubble: false,
-                                          hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
-                                <span class="product-overlay-button product-save">Add</span>
-                            </a>
-
-                            <div class="product-overlay-detail">
-                            </div>
-                            <div class="product-info">
-                                <h3><span data-bind="text: thumb_title"></span></h3>
-                            </div>
-                        <!--</a>-->
-                    <!-- /ko -->
-                </li>
+                <!-- ko template: {name: 'product_card_list_item.html'} -->
+                <!-- /ko -->
             </ul>
         </script>
 <!-- END -->
+
 
 <!-- SHARED VIEW: collection_card -->
         <script id="collection_card.html" type="text/html">
@@ -405,8 +449,6 @@
 
 <!--APP: collection.app -->
         <script id="collection.html" type="text/html">
-
-
             <div data-bind="if: collection_to_delete">
                 <div data-bind="confirmDialog: {title: 'Delete your collection?',
                                                 target: collection_to_delete,
@@ -423,7 +465,6 @@
             </div>
 
             <div class="collection-view" data-bind="with: collection">
-
                 <div data-bind="if: owned_by_me">
                     <input class="collection-info" type="text" data-bind="textInput, value: title">
                     <input class="collection-info" type="text" data-bind="textInput, value: description">
@@ -435,14 +476,22 @@
                     <div class="collection-info" type="text" data-bind="text: description"></div>
                 </div>
 
-                <ul class="collection-items" data-bind="foreach: items">
-                    <li class="view-collection-item">
-                        <img data-bind="attr: { src: thumb_image_url }">
-                        <div class="product-info">
-                            <h3><span data-bind="text: thumb_title"></span></h3>
-                        </div>
-                    </li>
-                </ul>
+
+                <!-- ko with: {
+                    favorites_vm: $parent.favorites_vm,
+                    add_to_collection_vm: $parent.add_to_collection_vm,
+                    items: items,
+                    product_class: 'product-in-collection',
+                    remove_from_collection: $parent.remove_from_collection
+                } -->
+                    <!-- ko template: 'product_card_shared.html' -->
+                    <!-- /ko -->
+                    <ul class="collection-items" data-bind="foreach: items">
+                        <!-- ko template: 'product_card_list_item.html' -->
+                        <!-- /ko -->
+                    </ul>
+                <!-- /ko -->
+
             </div>
 
         </script>

@@ -119,6 +119,13 @@ require.register("scripts/repository", function(exports, require, module) {
         //              (e.g. force_fecth or apply_filter), on_init will NOT be called. However, repository will check
         //              type of fields and if they are observables, it will write to them the new data, so you can get
         //              changes the normal way (by subscribing to the observables).
+        //  repo_relations: key-value where key is field and value is a repository instance, this is used to ensure
+        //                  that nested-data is registered to other repositories as required.
+        //                  for example, if we have a collection repository, and a collection has an array of items
+        //                  where each item should be in an item_repository, then we declare:
+        //                  { items: item_repo }
+        //                  this repository will then ensure that item_repo.register(item_data) is called whenever
+        //                  a collection is updated.
         //
         // Note: use on_init to make observables, or add additional fields/methods, example:
         //  spec['on_init'] = function(target) {
@@ -161,6 +168,17 @@ require.register("scripts/repository", function(exports, require, module) {
             var target = _by_dbid[data.id],
                 field;
             for (field in data) {
+                if (spec.repo_relations && spec.repo_relations[field]) {
+                    var repo = spec.repo_relations[field];
+                    if (data[field] instanceof Array) {
+                        var i;
+                        for (i = 0; i < data[field].length; ++i) {
+                            data[field][i] = repo.register(data[field][i]);
+                        }
+                    } else {
+                        data[field] = repo.register(data[field]);
+                    }
+                }
                 if (ko.isWriteableObservable(target[field])) {
                     target[field](data[field]);
                 } else {

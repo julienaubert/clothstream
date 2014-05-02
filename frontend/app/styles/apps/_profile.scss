@@ -15,3 +15,9 @@
 .profile-avatar {
   height: 32px;
 }
+
+
+.product-in-favorites {
+    @extend .product-card;
+}
+
