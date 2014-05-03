@@ -6,6 +6,7 @@ import random
 import shutil
 from pathlib import Path
 import csv
+from clothstream.styletags.models import ItemStyleTag
 
 from .models import Item
 from django_dynamic_fixture import G

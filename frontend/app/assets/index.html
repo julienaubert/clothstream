@@ -148,6 +148,9 @@
                 </span>
                 <a data-bind="attr: {href: link}"><span class="buy-button">Buy</span></a>
 
+                <ul data-bind="foreach: styletags">
+                    <li class="product-styletag" data-bind="text: '#' + $data"></li>
+                </ul>
             </div>
         </script>
 <!--END APP -->

@@ -1,9 +1,9 @@
-from django.test import TestCase
 from django_webtest import WebTest
 from django.core.urlresolvers import reverse
 from clothstream.favorites.models import FavoritedItem
-from clothstream.favorites.serializers import FavoritedItemSerializer
 from clothstream.item.fixtures import item_factory
+from clothstream.styletags.fixtures import styletag_factory
+from clothstream.styletags.models import ItemStyleTag
 from clothstream.user_profile.fixtures import user_factory
 
 
@@ -58,3 +58,10 @@ class TestListItems(WebTest):
         self.assertEqual(res.json['results'][0]['favorited_by_me'], True)
         res = self.app.get(self.url, user=other_user)
         self.assertEqual(res.json['results'][0]['favorited_by_me'], False)
+
+    def test_styletags(self):
+        item = item_factory()
+        styletag = styletag_factory()
+        ItemStyleTag.objects.create(item=item, styletag=styletag)
+        res = self.app.get(self.url)
+        self.assertEqual(res.json['results'][0]['styletags'], [styletag.name])
