@@ -1,5 +1,5 @@
 require.register("scripts/product", function(exports, require, module) {
-    ProductView = function(template_name, item_repo, add_to_collection_vm, favorites_vm) {
+    ProductVM = function(template_name, item_repo, add_to_collection_vm, favorites_vm) {
         var self = this;
         self.template_name = template_name;
         self.product = ko.observable(null);
@@ -11,5 +11,5 @@ require.register("scripts/product", function(exports, require, module) {
         }
     };
 
-    exports.ProductView = ProductView;
+    exports.ProductVM = ProductVM;
 });

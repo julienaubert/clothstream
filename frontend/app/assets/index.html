@@ -303,7 +303,6 @@ optional:
 
 -->
         <script id="product_card_list_item.html" type="text/html">
-            <!--<pre data-bind="text: ko.toJSON($parent, null, 2)"></pre>-->
             <li data-bind="attr: { id: 'product-card-id-' + $index() },
                                    click: $root.go_to_product,
                                    css: $parent.product_class">
@@ -341,9 +340,9 @@ optional:
                         <span class="product-overlay-button product-save">Add</span>
                     </a>
 
-                    <!-- ko if: $parent.remove_from_collection -->
+                    <!-- ko if: $parent.remove_from_collection_vm && $parent.remove_from_collection_vm.can_remove() -->
                         <a data-bind="attr: {href: link},
-                                      click: $parent.remove_from_collection,
+                                      click: $parent.remove_from_collection_vm.remove,
                                       clickBubble: false
                                      ">
                             <span class="product-overlay-button product-remove"
@@ -482,7 +481,7 @@ data:
                     add_to_collection_vm: $parent.add_to_collection_vm,
                     items: items,
                     product_class: 'product-in-collection',
-                    remove_from_collection: $parent.remove_from_collection
+                    remove_from_collection_vm: $parent.remove_from_collection_vm
                 } -->
                     <!-- ko template: 'product_card_shared.html' -->
                     <!-- /ko -->

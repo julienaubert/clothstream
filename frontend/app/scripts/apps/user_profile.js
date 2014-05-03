@@ -1,7 +1,7 @@
 require.register("scripts/profile", function(exports, require, module) {
     var discover = require('scripts/discover');
 
-    UserProfileView = function(template_name, user_repo, add_to_collection_vm, favorites_vm) {
+    UserProfileVM = function(template_name, user_repo, add_to_collection_vm, favorites_vm) {
         var self = this;
         self.template_name = template_name;
         self.user_viewed = ko.observable(false);
@@ -64,5 +64,5 @@ require.register("scripts/profile", function(exports, require, module) {
 
     };
 
-    exports.UserProfileView = UserProfileView;
+    exports.UserProfileVM = UserProfileVM;
 });

@@ -3,7 +3,7 @@ require.register("scripts/collections", function(exports, require, module) {
     var req = require('scripts/req');
     var auth = require('scripts/auth');
 
-    var CollectionsView = function(template_name, collection_repo, collection_owner) {
+    var CollectionsVM = function(template_name, collection_repo, collection_owner) {
         var self = this;
         self.template_name = template_name;
 
@@ -123,6 +123,6 @@ require.register("scripts/collections", function(exports, require, module) {
         return repo;
     };
 
-    exports.CollectionsView = CollectionsView;
+    exports.CollectionsVM = CollectionsVM;
     exports.construct_collection_repo = construct_collection_repo;
 });

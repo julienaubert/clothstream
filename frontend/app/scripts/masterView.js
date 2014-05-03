@@ -5,7 +5,7 @@ require.register("scripts/masterView", function(exports, require, module) {
     var discover = require('scripts/discover');
     var product = require('scripts/product');
 
-    exports.MasterViewModel = function(auth, item_repo, collection_repo, user_repo) {
+    exports.MasterVM = function(auth, item_repo, collection_repo, user_repo) {
         var self = this;
 
         // SHARED COMPONENTS
@@ -36,17 +36,18 @@ require.register("scripts/masterView", function(exports, require, module) {
 
         var favorites_vm = new discover.FavoritesVM(auth.user);
         var add_to_collection_vm  = new discover.AddToCollectionVM(auth.user);
+        var remove_from_collection_vm  = new collection.RemoveItemFromCollectionVM(auth.user);
 
         // VIEWS
         self.views = {
-            'profile': new profile.UserProfileView("profile.html", user_repo, add_to_collection_vm, favorites_vm),
-            'chosen_product': new product.ProductView("chosen_product.html", self.item_repo,
+            'profile': new profile.UserProfileVM("profile.html", user_repo, add_to_collection_vm, favorites_vm),
+            'chosen_product': new product.ProductVM("chosen_product.html", self.item_repo,
                 add_to_collection_vm, favorites_vm),
-            'discover': new discover.DiscoverView("discover.html", self.item_repo, self.collection_repo, auth.user,
+            'discover': new discover.DiscoverVM("discover.html", self.item_repo, self.collection_repo, auth.user,
                 add_to_collection_vm, favorites_vm),
-            'collections': new collections.CollectionsView("collections.html", self.collection_repo, auth.user),
-            'collection': new collection.CollectionView("collection.html", self.collection_repo, self.go_to_collections,
-                add_to_collection_vm, favorites_vm)
+            'collections': new collections.CollectionsVM("collections.html", self.collection_repo, auth.user),
+            'collection': new collection.CollectionVM("collection.html", self.collection_repo, self.go_to_collections,
+                add_to_collection_vm, favorites_vm, remove_from_collection_vm)
         };
         self.active_view = ko.observable();
 

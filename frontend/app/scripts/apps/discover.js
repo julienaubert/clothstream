@@ -250,7 +250,7 @@ require.register("scripts/discover", function(exports, require, module) {
     };
 
 
-    DiscoverView = function(template_name, item_repo, user_collection_repo, user, add_to_collection_vm, favorites_vm) {
+    DiscoverVM = function(template_name, item_repo, user_collection_repo, user, add_to_collection_vm, favorites_vm) {
         var self = this;
         self.template_name = template_name;
         self.user = user;
@@ -277,7 +277,7 @@ require.register("scripts/discover", function(exports, require, module) {
 
 
     exports.construct_item_repo = construct_item_repo;
-    exports.DiscoverView = DiscoverView;
+    exports.DiscoverVM = DiscoverVM;
     exports.AddToCollectionVM = AddToCollectionVM;
     exports.FavoritesVM = FavoritesVM;
 });
