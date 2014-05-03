@@ -8,15 +8,15 @@ from clothstream.item.fixtures import item_factory
 from optparse import make_option
 from clothstream.item.models import Item
 from clothstream.lib.modify_seq import setup_modified_seq
-from clothstream.styletags.fixtures import styletag_factory
+from clothstream.styletags.fixtures import styletag_factory, sample_styletags
 from clothstream.styletags.models import ItemStyleTag, StyleTag
 from clothstream.user_profile.fixtures import user_factory
 from clothstream.user_profile.models import UserProfile
 
 
 def generate(styletag__count=10, item__count=100, collection__count=100, user_profile__count=10, **kwargs):
-    for _ in range(styletag__count):
-        styletag_factory()
+    for name in sample_styletags[0:styletag__count]:
+        styletag_factory(name=name)
     for _ in range(item__count):
         item = item_factory(with_statics=True)
         for styletag in StyleTag.objects.order_by('?').all()[0:random.randint(0, 3)]:

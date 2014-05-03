@@ -2,12 +2,11 @@
   display: none;
 }
 
-
-.buy-button {
+.product-button-template {
   width: 100px;
   padding: 15px 20px;
   font-size: 20px;
-  background: none repeat scroll 0% 0% cornflowerblue;
+  background: none repeat scroll 0% 0%;
   text-align: center;
   text-transform: uppercase;
   cursor: pointer;
@@ -19,6 +18,17 @@
   position: relative;
   cursor: pointer;
 }
+
+.buy-button {
+  @extend .product-button-template;
+  background-color: cornflowerblue;
+}
+
+.add-style-tag-button {
+  @extend .product-button-template;
+  background-color: rgb(238, 123, 94);
+}
+
 
 .price-info {
   width: 100px;

@@ -9,17 +9,20 @@ require.register("scripts/initialize", function(exports, require, module) {
     var widget_bindings = require('scripts/widgetBindings');
     var dom_click = require('scripts/domClick');
     var profile = require('scripts/profile');
+    var styletags = require('scripts/styletags');
 
     $.csrfAjax = csrf.setup_csrf_ajax();
 
     var item_repo =  discover.construct_item_repo();
     var collection_repo = collections.construct_collection_repo(item_repo);
     var user_repo = auth.construct_user_repo(item_repo, collection_repo);
+    var styletag_repo = styletags.construct_styletag_repo();
 
     ko.applyBindings(new masterView.MasterVM(
         auth.create_facebook_auth(user_repo, item_repo),
         item_repo,
         collection_repo,
-        user_repo
+        user_repo,
+        styletag_repo
     ));
 });

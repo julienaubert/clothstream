@@ -5,7 +5,7 @@ require.register("scripts/masterView", function(exports, require, module) {
     var discover = require('scripts/discover');
     var product = require('scripts/product');
 
-    exports.MasterVM = function(auth, item_repo, collection_repo, user_repo) {
+    exports.MasterVM = function(auth, item_repo, collection_repo, user_repo, styletag_repo) {
         var self = this;
 
         // SHARED COMPONENTS
@@ -37,12 +37,13 @@ require.register("scripts/masterView", function(exports, require, module) {
         var favorites_vm = new discover.FavoritesVM(auth.user);
         var add_to_collection_vm  = new discover.AddToCollectionVM(auth.user);
         var remove_from_collection_vm  = new collection.RemoveItemFromCollectionVM(auth.user);
+        var add_styletag_to_item_vm = new product.AddStyleTagToItemVM(auth.user, styletag_repo);
 
         // VIEWS
         self.views = {
             'profile': new profile.UserProfileVM("profile.html", user_repo, add_to_collection_vm, favorites_vm),
             'chosen_product': new product.ProductVM("chosen_product.html", self.item_repo,
-                add_to_collection_vm, favorites_vm),
+                add_to_collection_vm, favorites_vm, add_styletag_to_item_vm),
             'discover': new discover.DiscoverVM("discover.html", self.item_repo, self.collection_repo, auth.user,
                 add_to_collection_vm, favorites_vm),
             'collections': new collections.CollectionsVM("collections.html", self.collection_repo, auth.user),

@@ -28,6 +28,7 @@ require.register("scripts/discover", function(exports, require, module) {
                 return "http://localhost:8000/api/items/" + db_id + "/";
             },
             on_init: function(obj) {
+                obj.styletags = ko.observableArray(obj.styletags);
                 obj.favorited_by_me = ko.observable(obj.favorited_by_me);
                 obj.favorited_by_me.subscribe(function(value) {
                     if (value) {
