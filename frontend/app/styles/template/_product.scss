@@ -1,0 +1,109 @@
+
+.product--container {
+  clear: both;
+}
+
+.product--container:before {
+  clear: both;
+}
+
+
+.product--product-container {
+  position: relative;
+  display: block;
+  float: left;
+}
+
+.product--product-img {
+  max-height: 1080px;
+  max-width: 800px;
+}
+
+.product--favorite-status {
+  @extend .product-overlay-button;
+  left: auto;
+  top: 10px;
+  bottom: auto;
+  right: 10px;
+}
+
+.product--product-not-favorited {
+  @extend .product-not-favorited;
+  @extend .product--favorite-status;
+}
+
+.product--product-favorited {
+  @extend .product-favorited;
+  @extend .product--favorite-status;
+}
+
+.product--product-save {
+  @extend .product-overlay-button;
+  @extend .product-save;
+  left: 10px;
+  top: 10px;
+  bottom: auto;
+  right: auto;
+}
+
+.product--material-info {
+  @extend .material-info;
+}
+
+.product--price-info {
+  width: 120px;
+  padding: 15px 20px;
+  font-size: 20px;
+  background: none repeat scroll 0% 0% transparent;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: medium none;
+  outline: medium none;
+  margin: 0px;
+  border-radius: 1px;
+  display: inline-block;
+  position: relative;
+}
+
+.product--favorited-count-container {
+  width: 100px;
+  padding: 15px 20px;
+  font-size: 20px;
+
+  border: solid 1px;
+  border-color: rgb(175, 177, 185);
+  border-radius: 1px;
+
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+  outline: medium none;
+  margin: 0px;
+  display: inline-block;
+}
+
+.product--favorited-count-value {
+  padding-left: 10px;
+  font-size: 1.2em;
+}
+
+.product--favorited-count-heart {
+  padding-right: 10px;
+  font-size: 1.2em;
+  color: rgb(102, 162, 210)
+}
+
+.product--buy-button {
+  @extend .buy-button;
+}
+
+.product--add-style-tag-button {
+  @extend .add-style-tag-button;
+}
+
+.product--product-styletag {
+  display: inline-block;
+  text-transform: uppercase;
+  color: rgb(238, 123, 94)
+}

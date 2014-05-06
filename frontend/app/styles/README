@@ -3,3 +3,21 @@
 Multi-column:
 - use: overflow: auto; on parent, and float:left on children
     http://stackoverflow.com/questions/11805352/floatleft-vs-displayinline-vs-displayinline-block-vs-displaytable-cell
+
+
+SCSS:
+
+- one scss file per template file.
+- a base.scss file with common definitions which the template-scss can extend from
+- naming a style class in an template context: <template>--<what>
+
+Note: only product.scss follows this for now.
+
+
+e.g. a buy button in template "product": "product--button-buy"
+
+.product--button-buy {
+  @extend .button-buy;
+}
+
+This allows for easy customizing one view, while inheriting from a standard style.

@@ -1,0 +1,25 @@
+// not to be used directly in html, only to be extended from
+
+
+.product-card {
+    position: relative;
+    max-width: 180px;
+    max-width: 180px;
+    border: 1px solid #feffdd;
+    display: inline-block;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    padding-bottom: 0em;
+    padding-top: 0em;
+    margin: 0 0 2.5% 2.5%;
+    background: #fff;
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    display: block;
+    margin: 0 0 20px;
+  }
+}
+
+

@@ -19,11 +19,14 @@ $legacy-support-for-mozilla: false;
 //@import "debug";
 @import "widgets";
 @import "filter";
-@import "apps/product";
-@import "apps/collection";
-@import "apps/collections";
-@import "apps/discover";
-@import "apps/profile";
+@import "template/base";
+@import "template/product_card_list_item.scss";
+@import "template/product";
+@import "template/list_products";
+@import "template/collection";
+@import "template/collections";
+@import "template/discover";
+@import "template/profile";
 
 
 .body {

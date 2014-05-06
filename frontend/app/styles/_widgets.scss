@@ -9,15 +9,19 @@
   background: none repeat scroll 0% 0%;
   text-align: center;
   text-transform: uppercase;
-  cursor: pointer;
-  border: medium none;
   outline: medium none;
   margin: 0px;
   border-radius: 1px;
   display: inline-block;
   position: relative;
   cursor: pointer;
+  color: black;
+  text-decoration: none;
+  border: solid 1px;
+  border-color: #afb1b9;
 }
+
+
 
 .buy-button {
   @extend .product-button-template;
@@ -29,22 +33,6 @@
   background-color: rgb(238, 123, 94);
 }
 
-
-.price-info {
-  width: 100px;
-  padding: 15px 20px;
-  font-size: 20px;
-  background: none repeat scroll 0% 0% #c3ed98;
-  text-align: center;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: medium none;
-  outline: medium none;
-  margin: 0px;
-  border-radius: 1px;
-  display: inline-block;
-  position: relative;
-}
 
 .material-info {
   color: #000000

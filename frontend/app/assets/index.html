@@ -148,47 +148,51 @@
             </div>
             <!-- end: this is for dialogs in add_styletag_to_item_vm -->
 
-            <div class="chosen-product"
+            <div class="product--container"
                  data-bind="with: product">
-                <div class="product-view">
-                    <img data-bind="attr: { src: thumb_image_url }">
+                <div class="product--product-container">
+                    <img class="product--product-img" data-bind="attr: { src: thumb_image_url }">
                     <a data-bind="click: $parent.favorites_vm.clicked,
                                   clickBubble: false
                                  ">
-                        <span class="product-overlay-button"
-                              data-bind="css: {'product-favorited': favorited_by_me,
-                                               'product-not-favorited': !favorited_by_me()
+                        <span data-bind="css: {'product--product-favorited': favorited_by_me,
+                                               'product--product-not-favorited': !favorited_by_me()
                                               }">
                             <i class="fa fa-heart"></i>
                         </span>
                     </a>
                     <a data-bind="click: $parent.add_to_collection_vm.add_to_collection,
-                                  clickBubble: false">
-                        <span class="product-overlay-button product-save">Add</span>
+                                  clickBubble: false"
+                            class="product--product-save">Add
                     </a>
                 </div>
-                <h1 data-bind="text: thumb_title"></h1>
-                <div class="material-info" data-bind="text: material"></div>
-                <span class="price-info">
-                    <!-- ko text: local_currency --><!-- /ko -->:
-                    <!-- ko text: local_price --><!-- /ko -->
-                </span>
 
-                <span class="favorited-count-container">
-                    <i class="favorited-count-heart fa fa-heart"></i>
-                    <span class="favorited-count-value" data-bind="text: favorited_count"></span>
-                </span>
-                <a data-bind="attr: {href: link}">
-                    <span class="buy-button">Buy</span>
-                </a>
+                <aside class="product--information">
 
-                <a data-bind="click: $parent.add_styletag_to_item_vm.add_to_item,
-                              clickBubble: false">
-                    <span class="add-style-tag-button">Add style tag</span>
-                </a>
+                    <a data-bind="attr: {href: link}" class="product--buy-button">Buy</a>
+
+                    <span class="product--price-info">
+                        <!-- ko text: local_currency --><!-- /ko -->:
+                        <!-- ko text: local_price --><!-- /ko -->
+                    </span>
+                    <h1 data-bind="text: thumb_title"></h1>
+
+                    <div class="product--material-info" data-bind="text: material"></div>
+
+                    <span class="product--favorited-count-container">
+                        <i class="product--favorited-count-heart fa fa-heart"></i>
+                        <span class="product--favorited-count-value" data-bind="text: favorited_count"></span>
+                    </span>
+
+                    <div data-bind="click: $parent.add_styletag_to_item_vm.add_to_item,
+                                    clickBubble: false"
+                       class="product--add-style-tag-button">Tag
+                    </div>
+                </aside>
+
 
                 <ul data-bind="foreach: styletags">
-                    <li class="product-styletag" data-bind="text: '#' + $data"></li>
+                    <li class="product--product-styletag" data-bind="text: '#' + $data"></li>
                 </ul>
             </div>
         </script>
@@ -354,8 +358,8 @@ optional:
                     </div>
                     <a data-bind="attr: {href: link},
                                   domClick,
-                                  hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
-                        <span class="product-overlay-button product-buy">Buy</span>
+                                  hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()"
+                            class="product-overlay-button product-buy">Buy
                     </a>
 
                     <a data-bind="click: $parent.favorites_vm.clicked,
@@ -376,8 +380,8 @@ optional:
 
                     <a data-bind="click: $parent.add_to_collection_vm.add_to_collection,
                                   clickBubble: false,
-                                  hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()">
-                        <span class="product-overlay-button product-save">Add</span>
+                                  hoverVisible: true, hoverTargetId: 'product-card-id-' + $index()"
+                            class="product-overlay-button product-save">Add
                     </a>
 
                     <!-- ko if: $parent.remove_from_collection_vm && $parent.remove_from_collection_vm.can_remove() -->
