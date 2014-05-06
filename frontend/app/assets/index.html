@@ -320,15 +320,15 @@ data:
             </div>
 
 
-            <!--<div data-bind="if: favorites_vm.show_must_login">-->
-                <!--<div data-bind="confirmDialog: {title: 'Login',-->
-                                                <!--confirm_text: 'OK',-->
-                                                <!--confirm_click: favorites_vm.confirmed_must_login-->
-                                                <!--}-->
-                               <!--">-->
-                    <!--<p>Login to save your favorites.</p>-->
-                <!--</div>-->
-            <!--</div>-->
+            <div data-bind="if: favorites_vm.show_must_login">
+                <div data-bind="confirmDialog: {title: 'Login',
+                                                confirm_text: 'OK',
+                                                confirm_click: favorites_vm.confirmed_must_login
+                                                }
+                               ">
+                    <p>Login to save your favorites.</p>
+                </div>
+            </div>
         </script>
 <!-- END -->
 
