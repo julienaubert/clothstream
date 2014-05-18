@@ -16,10 +16,6 @@
 }
 
 .collection-card {
-    min-width: 300px;
-    min-height: 280px;
-    max-width: 300px;
-    max-height: 280px;
     border: 1px solid #cac8ca;
     display: inline-block;
     padding: 0;
@@ -42,20 +38,30 @@
     box-sizing: border-box;
 }
 
-
 .collection-items {
+    min-width: 284px;
+    max-width: 284px;
+    min-height: 255px;
+    max-height: 255px;
     list-style-type: none;
+    display: inline-block;
     clear:both;
-    margin: 0;
+    margin: 5px;
     padding: 0;
 }
+
 .collection-item {
     display: inline-block;
+    text-align: center;
+    margin: 4px;
+    padding: 0px;
 }
 
 .collection-item img {
-  max-width: 64px;
-  max-height: 64px;
+    min-width: 60px;
+    max-width: 60px;
+    min-height: 77px;
+    max-height: 77px;
 }
 
 .collection-grid.columns-2 li {
