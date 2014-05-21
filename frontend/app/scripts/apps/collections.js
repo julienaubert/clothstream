@@ -3,9 +3,40 @@ require.register("scripts/collections", function(exports, require, module) {
     var req = require('scripts/req');
     var auth = require('scripts/auth');
 
+
+    var EditCollectionVM = function() {
+        var self = this;
+        self.data = {};
+        self.fields = ['public', 'title', 'description'];
+        self.collection = ko.observable(null);
+
+        self.edit = function(collection) {
+            var i, field_name;
+            for (i = 0; i < self.fields.length; ++i) {
+                field_name = self.fields[i];
+                self.data[field_name] = ko.observable(ko.unwrap(collection[field_name]));
+            }
+            self.collection(collection);
+        };
+
+        self.cancel = function(collection, event) {
+            self.collection(null);
+        };
+
+        self.confirm = function(collection, event) {
+            var i, field_name;
+            for (i = 0; i < self.fields.length; ++i) {
+                field_name = self.fields[i];
+                collection()[field_name](ko.unwrap(self.data[field_name]));
+            }
+            self.collection(null);
+        };
+    };
+
     var CollectionsVM = function(template_name, collection_repo, collection_owner) {
         var self = this;
         self.template_name = template_name;
+        self.edit_vm = new EditCollectionVM();
 
         self.collections = collection_repo.create_filter();
 

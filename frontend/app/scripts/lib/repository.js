@@ -267,7 +267,7 @@ require.register("scripts/repository", function(exports, require, module) {
             };
             var error = function() {
             };
-            spec.requests.delete(spec.delete_url(db_id), success, error);
+            spec.requests.delete(spec.delete_url(db_id), {}, success, error);
         };
 
     };

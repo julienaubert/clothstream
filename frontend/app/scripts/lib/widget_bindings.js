@@ -40,7 +40,11 @@ ko.bindingHandlers.confirmDialog = {
                         {
                             text: valueAccessor()['cancel_text'],
                             click: function(event) {
-                                target(null);
+                                if (valueAccessor()['cancel_click']) {
+                                    valueAccessor()['cancel_click'](target, event);
+                                } else {
+                                    target(null);
+                                }
                             }
                         }
                     );

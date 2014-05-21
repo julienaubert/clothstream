@@ -21,7 +21,9 @@
   border-color: #afb1b9;
 }
 
-
+.no-text-value {
+  color: darkgray;
+}
 
 .buy-button {
   @extend .product-button-template;

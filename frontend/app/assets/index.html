@@ -431,15 +431,21 @@ data:
 <!-- SHARED VIEW: collection_card -->
         <script id="collection_card.html" type="text/html">
             <li class="collection-card" data-bind="click: $root.go_to_collection ">
+
                 <div data-bind="if: owned_by_me">
-                    <input class="collection-info" type="text" data-bind="textInput, value: title">
-                    <input class="collection-info" type="text" data-bind="textInput, value: description">
-                    <div><input type='checkbox' data-bind="checked: public">Public</div>
-                    <div data-bind="click: $parent.delete">Delete</div>
+                    <div class="collection-info" type="text" data-bind="text: title"></div>
+                    <ul class="menu">
+                        <li data-bind="click: $parent.edit_vm.edit, clickBubble: false">
+                            <span class="fa fa-pencil"></span>
+                        </li>
+                        <li data-bind="click: $parent.delete, clickBubble: false">
+                            <span class="fa fa-trash-o"></span>
+                        </li>
+                    </ul>
                 </div>
+
                 <div data-bind="ifnot: owned_by_me">
                     <div class="collection-info" type="text" data-bind="text: title"></div>
-                    <div class="collection-info" type="text" data-bind="text: description"></div>
                 </div>
 
                 <ul class="collection-items" data-bind="foreach: items">
@@ -477,6 +483,36 @@ data:
                     <div data-bind="with: collection_to_delete">
                         <p><strong data-bind="text: title"></strong></p>
                         <p>This collection will disappear, any shared link to it will stop working. This cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div data-bind="if: edit_vm.collection">
+                <div data-bind="confirmDialog: {title: 'Edit collection',
+                                                target: edit_vm.collection,
+                                                cancel_text: 'Cancel',
+                                                cancel_click: edit_vm.cancel,
+                                                confirm_text: 'OK',
+                                                confirm_click: edit_vm.confirm
+                                                }
+                               ">
+                    <div data-bind="with: edit_vm.data">
+                        <!-- ko if: title -->
+                        <input class="collection-info" type="text" data-bind="textInput, value: title">
+                        <!-- /ko -->
+                        <!-- ko ifnot: title -->
+                        <input class="collection-info no-text-value" type="text" data-bind="textInput, value: 'Title'">
+                        <!-- /ko -->
+
+                        <!-- ko if: description -->
+                        <input class="collection-info" type="text" data-bind="textInput, value: description">
+                        <!-- /ko -->
+                        <!-- ko ifnot: description -->
+                        <input class="collection-info no-text-value" type="text" data-bind="textInput, value: 'Description'">
+                        <!-- /ko -->
+
+                        <div><input type='checkbox' data-bind="checked: public">Public</div>
+                        When it is public, anyone can see your collection.
                     </div>
                 </div>
             </div>
