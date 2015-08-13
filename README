@@ -4,7 +4,7 @@ There are useful bits and pieces and so I am open sourcing it for future use. I 
 
 Notes below were notes for myself while I was working on it.
 
-
+PS: I would definitely go for another tech stack at this point. (I still like django+drf as backend, but would use Stylus+React+NPM/babel.js in front)
 
 == TODO ==
 
