@@ -216,7 +216,7 @@
                     </nav>
                 </section>
                 <!-- ko if: show_collections -->
-                    <ul class="collection-grid columns-3"
+                    <ul class="collection-grid"
                         data-bind="scrollgrid: {items: user_viewed().collections.objects,
                                                 on_scroll: load_more_collections}">
                         <!-- ko template: {name: 'collection_card.html'} -->
@@ -433,23 +433,23 @@ data:
             <li class="collection-card" data-bind="click: $root.go_to_collection ">
 
                 <div data-bind="if: owned_by_me">
-                    <div class="collection-info" type="text" data-bind="text: title"></div>
-                    <ul class="menu">
-                        <li data-bind="click: $parent.edit_vm.edit, clickBubble: false">
+                    <div class="collection-title" type="text" data-bind="text: title"></div>
+                    <ul class="collection-menu">
+                        <li class="collection-menu-button" data-bind="click: $parent.edit_vm.edit, clickBubble: false">
                             <span class="fa fa-pencil"></span>
                         </li>
-                        <li data-bind="click: $parent.delete, clickBubble: false">
+                        <li class="collection-menu-button" data-bind="click: $parent.delete, clickBubble: false">
                             <span class="fa fa-trash-o"></span>
                         </li>
                     </ul>
                 </div>
 
                 <div data-bind="ifnot: owned_by_me">
-                    <div class="collection-info" type="text" data-bind="text: title"></div>
+                    <div class="collection-title" type="text" data-bind="text: title"></div>
                 </div>
 
                 <ul class="collection-items" data-bind="foreach: items">
-                    <!-- ko if: $index() < 9 -->
+                    <!-- ko if: $index() < 12 -->
                     <li class="collection-item">
                         <img data-bind="attr: { src: thumb_image_url }">
                     </li>
@@ -517,7 +517,8 @@ data:
                 </div>
             </div>
 
-            <ul class="collection-grid" data-bind="scrollgrid: {items: collections.objects, on_scroll: load_more}">
+            <ul class="collection-grid"
+                data-bind="scrollgrid: {items: collections.objects, on_scroll: load_more}">
                 <!-- ko template: {name: 'collection_card.html'} -->
                 <!-- /ko -->
             </ul>
